@@ -1,5 +1,10 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Description
+
+Application is created only for the learning/training purposes.
+It is frontend only. Backend is here - https://github.com/jackinf/golang-goals
+
 ## Available Scripts
 
 In the project directory, you can run:
