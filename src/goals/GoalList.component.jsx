@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
+import AddIcon from '@material-ui/icons/Add';
 import ViewIcon from '@material-ui/icons/Visibility';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -16,7 +17,9 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import {getGoals} from './Goal.api';
+import Typography from "@material-ui/core/Typography";
+import Button from '@material-ui/core/Button';
+import {getGoals, deleteGoal} from './Goal.api';
 
 const ITEM_HEIGHT = 48;
 
@@ -55,8 +58,14 @@ class GoalList extends Component {
     this.props.history.push(`/goals/${id}`);
   };
 
-  deleteitem = (id) => {
+  addItem = () => {
+    this.props.history.push(`/goals/new`);
+  };
 
+  deleteItem = async (id) => {
+    console.info(`deleting with id ${id}`);
+    // TODO: add dialog
+    await deleteGoal(id);
   };
 
   render() {
@@ -65,7 +74,14 @@ class GoalList extends Component {
 
     return (
       <Paper className={classes.root}>
-        <h2>Goals</h2>
+        <Typography component="h2" variant="h5">
+          Goals
+        </Typography>
+        <div>
+          <Button variant="contained" color="primary" onClick={() => this.addItem()}>
+            <AddIcon className={classes.icon} /> Add new goal
+          </Button>
+        </div>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
@@ -114,7 +130,7 @@ class GoalList extends Component {
                         <EditIcon className={classes.icon} />
                         Edit
                       </MenuItem>
-                      <MenuItem onClick={this.handleCloseMenu}>
+                      <MenuItem onClick={() => this.deleteItem(row.id)}>
                         <DeleteIcon className={classes.icon} />
                         Delete
                       </MenuItem>
