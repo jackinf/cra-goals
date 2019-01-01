@@ -38,7 +38,7 @@ const styles = theme => ({
 class GoalList extends Component {
   constructor(props) {
     super(props);
-    this.state = {paginatedList: {}, actionMenuEl: null};
+    this.state = {paginatedList: {}, actionMenuEl: null, hash: ''};
   }
 
   async componentDidMount() {
@@ -63,13 +63,15 @@ class GoalList extends Component {
   };
 
   deleteItem = async (id) => {
-    console.info(`deleting with id ${id}`);
     // TODO: add dialog
+    this.handleCloseMenu();
     await deleteGoal(id);
+    const paginatedList = await getGoals();
+    this.setState({paginatedList});
   };
 
   render() {
-    const actionMenuEl = this.state.actionMenuEl;
+    const {actionMenuEl} = this.state;
     const {classes} = this.props;
 
     return (

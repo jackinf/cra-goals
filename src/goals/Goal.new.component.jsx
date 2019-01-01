@@ -73,21 +73,25 @@ class GoalNew extends Component {
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="title">Title</InputLabel>
             <Input id="title" name="title" autoComplete="title" autoFocus
+                   defaultValue={this.state.title}
                    onChange={e => this.setState({title: e.target.value})}/>
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="description">Description</InputLabel>
             <Input name="description" type="description" id="description"
+                   defaultValue={this.state.description}
                    onChange={e => this.setState({description: e.target.value})}/>
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="due">Due</InputLabel>
             <Input name="due" type="due" id="due"
+                   defaultValue={this.state.due}
                    onChange={e => this.setState({due: e.target.value})}/>
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="motivation">Motivation</InputLabel>
             <Input name="motivation" type="motivation" id="motivation"
+                   defaultValue={this.state.motivation}
                    onChange={e => this.setState({motivation: e.target.value})}/>
           </FormControl>
           <Button
