@@ -62,6 +62,10 @@ class GoalList extends Component {
     this.props.history.push(`/goals/new`);
   };
 
+  editItem = (id) => {
+    this.props.history.push(`/goals/${id}/edit`);
+  };
+
   deleteItem = async (id) => {
     // TODO: add dialog
     this.handleCloseMenu();
@@ -128,7 +132,7 @@ class GoalList extends Component {
                         <ViewIcon className={classes.icon} />
                         View
                       </MenuItem>
-                      <MenuItem onClick={this.handleCloseMenu}>
+                      <MenuItem onClick={() => this.editItem(row.id)}>
                         <EditIcon className={classes.icon} />
                         Edit
                       </MenuItem>
