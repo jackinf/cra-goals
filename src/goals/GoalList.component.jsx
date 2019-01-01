@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {Component, useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
@@ -35,122 +35,97 @@ const styles = theme => ({
   },
 });
 
-class GoalList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {paginatedList: {}, actionMenuEl: null, hash: ''};
-  }
+const GoalList = (props) => {
 
-  async componentDidMount() {
-    const paginatedList = await getGoals();
-    this.setState({paginatedList});
-  }
+  const classes = props.classes;
+  const [paginatedList, setPaginatedList] = useState({});
+  const [actionMenuEl, setActionMenuEl] = useState(null);
+  useEffect(async () => setPaginatedList(await getGoals()), []);
 
-  handleOpenMenu = event => {
-    this.setState({ actionMenuEl: event.currentTarget });
-  };
-
-  handleCloseMenu = () => {
-    this.setState({ actionMenuEl: null });
-  };
-
-  viewItem = (id) => {
-    this.props.history.push(`/goals/${id}`);
-  };
-
-  addItem = () => {
-    this.props.history.push(`/goals/new`);
-  };
-
-  editItem = (id) => {
-    this.props.history.push(`/goals/${id}/edit`);
-  };
-
-  deleteItem = async (id) => {
+  const viewItem = (id) => props.history.push(`/goals/${id}`);
+  const addItem = () => props.history.push(`/goals/new`);
+  const editItem = (id) => props.history.push(`/goals/${id}/edit`);
+  const deleteItem = async (id) => {
     // TODO: add dialog
-    this.handleCloseMenu();
+    handleCloseMenu();
     await deleteGoal(id);
-    const paginatedList = await getGoals();
-    this.setState({paginatedList});
+    setPaginatedList(await getGoals());
   };
+  const handleOpenMenu = event => setActionMenuEl(event.currentTarget);
+  const handleCloseMenu = () => setActionMenuEl(null);
 
-  render() {
-    const {actionMenuEl} = this.state;
-    const {classes} = this.props;
+  return (
+    <Paper className={classes.root}>
+      <Typography component="h2" variant="h5">
+        Goals
+      </Typography>
+      <div>
+        <Button variant="contained" color="primary" onClick={addItem}>
+          <AddIcon className={classes.icon} /> Add new goal
+        </Button>
+      </div>
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Title</TableCell>
+            <TableCell align="right">Due</TableCell>
+            <TableCell align="right" />
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {paginatedList &&
+          paginatedList.items &&
+          paginatedList.items.map(row => {
+            const open = Boolean(actionMenuEl);
 
-    return (
-      <Paper className={classes.root}>
-        <Typography component="h2" variant="h5">
-          Goals
-        </Typography>
-        <div>
-          <Button variant="contained" color="primary" onClick={() => this.addItem()}>
-            <AddIcon className={classes.icon} /> Add new goal
-          </Button>
-        </div>
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell align="right">Due</TableCell>
-              <TableCell align="right" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {this.state.paginatedList &&
-            this.state.paginatedList.items &&
-            this.state.paginatedList.items.map(row => {
-              const open = Boolean(actionMenuEl);
-
-              return (
-                <TableRow key={row.id}>
-                  <TableCell component="th" scope="row">
-                    {row.title}
-                  </TableCell>
-                  <TableCell align="right">{moment(row.due).format("MMM Do YY")}</TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      aria-label="More"
-                      aria-owns={open ? 'long-menu' : undefined}
-                      aria-haspopup="true"
-                      onClick={this.handleOpenMenu}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                      anchorEl={actionMenuEl}
-                      open={open}
-                      onClose={this.handleCloseMenu}
-                      PaperProps={{
-                        style: {
-                          maxHeight: ITEM_HEIGHT * 4.5,
-                          width: 200,
-                        },
-                      }}
-                    >
-                      <MenuItem onClick={() => this.viewItem(row.id)}>
-                        <ViewIcon className={classes.icon} />
-                        View
-                      </MenuItem>
-                      <MenuItem onClick={() => this.editItem(row.id)}>
-                        <EditIcon className={classes.icon} />
-                        Edit
-                      </MenuItem>
-                      <MenuItem onClick={() => this.deleteItem(row.id)}>
-                        <DeleteIcon className={classes.icon} />
-                        Delete
-                      </MenuItem>
-                    </Menu>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </Paper>
-    );
-  }
-}
+            return (
+              <TableRow key={row.id}>
+                <TableCell component="th" scope="row">
+                  {row.title}
+                </TableCell>
+                <TableCell align="right">{moment(row.due).format("MMM Do YY")}</TableCell>
+                <TableCell align="right">
+                  <IconButton
+                    aria-label="More"
+                    aria-owns={open ? 'long-menu' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleOpenMenu}
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    anchorEl={actionMenuEl}
+                    open={open}
+                    onClose={handleCloseMenu}
+                    PaperProps={{
+                      style: {
+                        maxHeight: ITEM_HEIGHT * 4.5,
+                        width: 200,
+                      },
+                    }}
+                  >
+                    <MenuItem onClick={() => viewItem(row.id)}>
+                      <ViewIcon className={classes.icon} />
+                      View
+                    </MenuItem>
+                    <MenuItem onClick={() => editItem(row.id)}>
+                      <EditIcon className={classes.icon} />
+                      Edit
+                    </MenuItem>
+                    <MenuItem onClick={() => deleteItem(row.id)}>
+                      <DeleteIcon className={classes.icon} />
+                      Delete
+                    </MenuItem>
+                  </Menu>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </Paper>
+  )
+};
 
 GoalList.propTypes = {
   classes: PropTypes.object.isRequired,

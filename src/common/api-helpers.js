@@ -20,10 +20,10 @@ export async function securedFetch(config) {
   }
 
   fetchSettingsInner.headers = fetchSettingsInner.headers || {};
-  if (!('Authorization' in fetchSettingsInner.headers)) {
+  if (!fetchSettingsInner.headers.hasOwnProperty('Authorization')) {
     fetchSettingsInner.headers['Authorization'] = `Bearer ${token}`
   }
-  if (!('Content-Type' in fetchSettingsInner.headers)) {
+  if (!fetchSettingsInner.headers.hasOwnProperty('Content-Type')) {
     fetchSettingsInner.headers['Content-Type'] = 'application/json'
   }
 
