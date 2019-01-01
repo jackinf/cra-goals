@@ -1,44 +1,17 @@
-function TokenException(message) {
-  this.message = message;
-  this.name = 'TokenException';
-}
+import { securedFetch } from '../common/api-helpers';
 
 export async function getGoals() {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    throw new TokenException("Token is missing");
-  }
-
-  try {
-    const response = await fetch("http://localhost:8080/v1/goals", {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    return await response.json();
-  } catch (err) {
-    console.error("Failed to fetch goals", err)
-  }
+  return await securedFetch({
+    url: "http://localhost:8080/v1/goals",
+    errorMessage: "Failed to fetch goals"
+  });
 }
 
 export async function getGoal(id) {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    throw new TokenException("Token is missing");
-  }
-
-  try {
-    const response = await fetch(`http://localhost:8080/v1/goals/${id}`, {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    return await response.json();
-  } catch (err) {
-    console.error(`Failed to fetch goal with id ${id}`, err)
-  }
+  return await securedFetch({
+    url: `http://localhost:8080/v1/goals/${id}`,
+    errorMessage: `Failed to fetch goal with id ${id}`
+  });
 }
 
 
