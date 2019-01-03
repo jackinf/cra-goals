@@ -17,7 +17,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Typography from "@material-ui/core/Typography";
 import Button from '@material-ui/core/Button';
 import {getGoals, deleteGoal} from './Goal.api';
 
@@ -70,9 +69,9 @@ const GoalList = (props) => {
       </Button>
 
       <Paper className={classes.paper}>
-        <Typography component="h2" variant="h5">
-          Goals
-        </Typography>
+        <svg>
+          <text x="0" y="110px" font-size="110px" font-weight="bold" stroke="black" stroke-width="0.5" fill="none">Goals</text>
+        </svg>
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
