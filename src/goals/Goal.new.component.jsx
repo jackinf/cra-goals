@@ -12,6 +12,7 @@ import {withRouter} from 'react-router-dom';
 import {addGoal} from "./Goal.api";
 import goalCommonStyles from "./Goal.common-styles";
 import ArrowBack from "../../node_modules/@material-ui/icons/ArrowBack";
+import {DatePicker} from "material-ui-pickers";
 
 const styles = theme => ({ ...goalCommonStyles(theme) });
 
@@ -53,9 +54,7 @@ function GoalNew(props) {
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="due">Due</InputLabel>
-            <Input name="due" type="due" id="due"
-                   defaultValue={due}
-                   onChange={e => setDue(e.target.value)}/>
+            <DatePicker value={due} onChange={date => setDue(date)} />
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="motivation">Motivation</InputLabel>
