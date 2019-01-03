@@ -1,4 +1,4 @@
-import React, {Component, useState, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
@@ -36,7 +36,6 @@ const styles = theme => ({
 });
 
 const GoalList = (props) => {
-
   const classes = props.classes;
   const [paginatedList, setPaginatedList] = useState({});
   const [actionMenuEl, setActionMenuEl] = useState(null);

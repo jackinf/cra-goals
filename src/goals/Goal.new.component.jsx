@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, {useState} from 'react';
 import Avatar from "@material-ui/core/Avatar";
 import AddIcon from '@material-ui/icons/Add';
 import Typography from "@material-ui/core/Typography";
@@ -43,70 +43,63 @@ const styles = theme => ({
   },
 });
 
+function GoalNew(props) {
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [due, setDue] = useState('');
+  const [motivation, setMotivation] = useState('');
 
-class GoalNew extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      title: '',
-      description: '',
-      due: '',
-      motivation: ''
-    };
-  }
+  const {classes} = props;
+  return (
+    <Paper className={classes.paper}>
+      <Avatar className={classes.avatar}>
+        <AddIcon />
+      </Avatar>
+      <Typography component="h1" variant="h5">
+        Create a goal
+      </Typography>
+      <form className={classes.form} onSubmit={async e => {
+        e.preventDefault();
+        await addGoal({title, description, due, motivation});
+        props.history.push('/goals');
+      }}>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="title">Title</InputLabel>
+          <Input id="title" name="title" autoComplete="title" autoFocus
+                 defaultValue={title}
+                 onChange={e => setTitle(e.target.value)}/>
+        </FormControl>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="description">Description</InputLabel>
+          <Input name="description" type="description" id="description"
+                 defaultValue={description}
+                 onChange={e => setDescription(e.target.value)}/>
+        </FormControl>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="due">Due</InputLabel>
+          <Input name="due" type="due" id="due"
+                 defaultValue={due}
+                 onChange={e => setDue(e.target.value)}/>
+        </FormControl>
+        <FormControl margin="normal" required fullWidth>
+          <InputLabel htmlFor="motivation">Motivation</InputLabel>
+          <Input name="motivation" type="motivation" id="motivation"
+                 defaultValue={motivation}
+                 onChange={e => setMotivation(e.target.value)}/>
+        </FormControl>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          color="primary"
+          className={classes.submit}
+        >
+          Add goal
+        </Button>
+      </form>
+    </Paper>
+  );
 
-  render() {
-    const {classes} = this.props;
-    return (
-      <Paper className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <AddIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Create a goal
-        </Typography>
-        <form className={classes.form} onSubmit={async e => {
-          e.preventDefault();
-          await addGoal(this.state);
-          this.props.history.push('/goals');
-        }}>
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="title">Title</InputLabel>
-            <Input id="title" name="title" autoComplete="title" autoFocus
-                   defaultValue={this.state.title}
-                   onChange={e => this.setState({title: e.target.value})}/>
-          </FormControl>
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="description">Description</InputLabel>
-            <Input name="description" type="description" id="description"
-                   defaultValue={this.state.description}
-                   onChange={e => this.setState({description: e.target.value})}/>
-          </FormControl>
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="due">Due</InputLabel>
-            <Input name="due" type="due" id="due"
-                   defaultValue={this.state.due}
-                   onChange={e => this.setState({due: e.target.value})}/>
-          </FormControl>
-          <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="motivation">Motivation</InputLabel>
-            <Input name="motivation" type="motivation" id="motivation"
-                   defaultValue={this.state.motivation}
-                   onChange={e => this.setState({motivation: e.target.value})}/>
-          </FormControl>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Add goal
-          </Button>
-        </form>
-      </Paper>
-    );
-  }
 }
 
 export default withStyles(styles)(withRouter(GoalNew));
