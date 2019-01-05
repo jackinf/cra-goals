@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
@@ -9,7 +9,6 @@ import GoalEdit from "./goals/Goal.edit.component";
 import GoalView from "./goals/Goal.view.component";
 import Login from "./auth/Login.component";
 import {isLoggedIn} from "./auth/Auth.api";
-import AppDrawer from './common/AppDrawer.component';
 import DefaultAppBar from './common/DefaultAppBar.component';
 
 function App() {
@@ -23,14 +22,11 @@ function App() {
     )
   }
 
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   return (
     <MuiPickersUtilsProvider utils={MomentUtils}>
       <Router>
         <div>
-          <DefaultAppBar setDrawerOpen={setDrawerOpen} />
-          <AppDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+          <DefaultAppBar />
 
           <Switch>
             <Route path="/" exact component={GoalList} />
