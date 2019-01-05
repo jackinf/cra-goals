@@ -6,10 +6,12 @@ export async function login(username, password) {
   });
   const data = await response.json();
   localStorage.setItem("token", data.token);
+  window.location.reload();
 }
 
 export function logout() {
   localStorage.removeItem("token");
+  window.location.reload();
 }
 
 export function isLoggedIn() {

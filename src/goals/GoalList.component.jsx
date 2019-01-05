@@ -75,9 +75,6 @@ const GoalList = (props) => {
       </div>
 
       <Paper className={`${classes.paper} ${classes.centralizer}`}>
-          <svg>
-            <text x="0" y="110px" fontSize="110px" fontWeight="bold" stroke="black" strokeWidth="0.5" fill="none">Goals</text>
-          </svg>
           <Table className={classes.table}>
             <TableHead>
               <TableRow>

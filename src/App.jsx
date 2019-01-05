@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
@@ -8,23 +8,41 @@ import GoalNew from "./goals/Goal.new.component";
 import GoalEdit from "./goals/Goal.edit.component";
 import GoalView from "./goals/Goal.view.component";
 import Login from "./auth/Login.component";
+import {isLoggedIn} from "./auth/Auth.api";
+import AppDrawer from './common/AppDrawer.component';
+import DefaultAppBar from './common/DefaultAppBar.component';
 
-class App extends Component {
-  render() {
+function App() {
+  if (!isLoggedIn()) {
     return (
-      <MuiPickersUtilsProvider utils={MomentUtils}>
-        <Router>
+      <Router>
+        <Switch>
+          <Route path="*" exact component={Login} />
+        </Switch>
+      </Router>
+    )
+  }
+
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  return (
+    <MuiPickersUtilsProvider utils={MomentUtils}>
+      <Router>
+        <div>
+          <DefaultAppBar setDrawerOpen={setDrawerOpen} />
+          <AppDrawer drawerOpen={drawerOpen} setDrawerOpen={setDrawerOpen} />
+
           <Switch>
-            <Route path="/" exact component={Login} />
+            <Route path="/" exact component={GoalList} />
+            <Route path="/goals" exact component={GoalList} />
             <Route path="/goals/new" exact component={GoalNew} />
             <Route path="/goals/:id/edit" exact component={GoalEdit} />
             <Route path="/goals/:id" exact component={GoalView} />
-            <Route path="/goals/" component={GoalList} />
           </Switch>
-        </Router>
-      </MuiPickersUtilsProvider>
-    );
-  }
+        </div>
+      </Router>
+    </MuiPickersUtilsProvider>
+  );
 }
 
 export default App;
