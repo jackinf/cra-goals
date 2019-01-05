@@ -4,14 +4,14 @@ export async function login(username, password) {
     body: JSON.stringify({username, password}),
     headers: { 'Content-Type': 'application/json'}
   });
-  const data = await response.json();
-  localStorage.setItem("token", data.token);
-  window.location.reload();
+
+  // on success: {token: "abc..."}
+  // on failure: {error_code: "UNAUTHORIZED", message: "Authentication failed.", developer_message: "Authentication failed: invalid credential"}
+  return await response.json();
 }
 
 export function logout() {
   localStorage.removeItem("token");
-  window.location.reload();
 }
 
 export function isLoggedIn() {
