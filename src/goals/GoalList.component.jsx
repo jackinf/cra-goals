@@ -2,7 +2,6 @@ import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
-import AddIcon from '@material-ui/icons/Add';
 import ViewIcon from '@material-ui/icons/Visibility';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -17,7 +16,6 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Fab from '@material-ui/core/Fab';
 import {getGoals, deleteGoal} from './Goal.api';
 
 const ITEM_HEIGHT = 48;
@@ -55,7 +53,6 @@ const GoalList = (props) => {
   useEffect(async () => setPaginatedList(await getGoals()), []);
 
   const viewItem = (id) => props.history.push(`/goals/${id}`);
-  const addItem = () => props.history.push(`/goals/new`);
   const editItem = (id) => props.history.push(`/goals/${id}/edit`);
   const deleteItem = async (id) => {
     // TODO: add dialog
@@ -67,76 +64,68 @@ const GoalList = (props) => {
   const handleCloseMenu = () => setActionMenuEl(null);
 
   return (
-    <div>
-      <div className={classes.centralizer}>
-        <Fab className={classes.addButton} color="primary" onClick={addItem}>
-          <AddIcon className={classes.icon} />
-        </Fab>
-      </div>
+    <Paper className={`${classes.paper} ${classes.centralizer}`}>
+      <Table className={classes.table}>
+        <TableHead>
+          <TableRow>
+            <TableCell>Title</TableCell>
+            <TableCell align="right">Due</TableCell>
+            <TableCell align="right"/>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {paginatedList &&
+          paginatedList.items &&
+          paginatedList.items.map(row => {
+            const open = Boolean(actionMenuEl);
 
-      <Paper className={`${classes.paper} ${classes.centralizer}`}>
-          <Table className={classes.table}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Title</TableCell>
-                <TableCell align="right">Due</TableCell>
-                <TableCell align="right" />
+            return (
+              <TableRow key={row.id}>
+                <TableCell component="th" scope="row">
+                  {row.title}
+                </TableCell>
+                <TableCell align="right">{row.due && moment(row.due).format("DD.MM.YYYY")}</TableCell>
+                <TableCell align="right">
+                  <IconButton
+                    aria-label="More"
+                    aria-owns={open ? 'long-menu' : undefined}
+                    aria-haspopup="true"
+                    onClick={handleOpenMenu}
+                  >
+                    <MoreVertIcon/>
+                  </IconButton>
+                  <Menu
+                    anchorEl={actionMenuEl}
+                    open={open}
+                    onClose={handleCloseMenu}
+                    PaperProps={{
+                      style: {
+                        maxHeight: ITEM_HEIGHT * 4.5,
+                        width: 200,
+                      },
+                    }}
+                  >
+                    <MenuItem onClick={() => viewItem(row.id)}>
+                      <ViewIcon className={classes.icon}/>
+                      View
+                    </MenuItem>
+                    <MenuItem onClick={() => editItem(row.id)}>
+                      <EditIcon className={classes.icon}/>
+                      Edit
+                    </MenuItem>
+                    <MenuItem onClick={() => deleteItem(row.id)}>
+                      <DeleteIcon className={classes.icon}/>
+                      Delete
+                    </MenuItem>
+                  </Menu>
+                </TableCell>
               </TableRow>
-            </TableHead>
-            <TableBody>
-              {paginatedList &&
-              paginatedList.items &&
-              paginatedList.items.map(row => {
-                const open = Boolean(actionMenuEl);
+            );
+          })}
+        </TableBody>
+      </Table>
 
-                return (
-                  <TableRow key={row.id}>
-                    <TableCell component="th" scope="row">
-                      {row.title}
-                    </TableCell>
-                    <TableCell align="right">{row.due && moment(row.due).format("DD.MM.YYYY")}</TableCell>
-                    <TableCell align="right">
-                      <IconButton
-                        aria-label="More"
-                        aria-owns={open ? 'long-menu' : undefined}
-                        aria-haspopup="true"
-                        onClick={handleOpenMenu}
-                      >
-                        <MoreVertIcon />
-                      </IconButton>
-                      <Menu
-                        anchorEl={actionMenuEl}
-                        open={open}
-                        onClose={handleCloseMenu}
-                        PaperProps={{
-                          style: {
-                            maxHeight: ITEM_HEIGHT * 4.5,
-                            width: 200,
-                          },
-                        }}
-                      >
-                        <MenuItem onClick={() => viewItem(row.id)}>
-                          <ViewIcon className={classes.icon} />
-                          View
-                        </MenuItem>
-                        <MenuItem onClick={() => editItem(row.id)}>
-                          <EditIcon className={classes.icon} />
-                          Edit
-                        </MenuItem>
-                        <MenuItem onClick={() => deleteItem(row.id)}>
-                          <DeleteIcon className={classes.icon} />
-                          Delete
-                        </MenuItem>
-                      </Menu>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            </TableBody>
-          </Table>
-
-      </Paper>
-    </div>
+    </Paper>
   )
 };
 
