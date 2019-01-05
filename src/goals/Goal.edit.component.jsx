@@ -4,6 +4,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import Typography from "@material-ui/core/Typography";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
+import Label from "@material-ui/core/StepLabel";
 import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
 import Paper from "@material-ui/core/Paper";
@@ -69,8 +70,8 @@ function GoalEdit(props) {
                    onChange={e => setDescription(e.target.value)}/>
           </FormControl>
           <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="due">Due</InputLabel>
-            <DatePicker value={due} onChange={date => setDue(date)} />
+            <Label className={classes.dateLabel}>Due *</Label>
+            <DatePicker value={due} onChange={setDue} format="DD.MM.YYYY" />
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="motivation">Motivation</InputLabel>

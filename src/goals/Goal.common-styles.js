@@ -30,5 +30,8 @@ export default theme => ({
   },
   backButton: {
     margin: `${theme.spacing.unit * 1}px`
+  },
+  dateLabel: {
+    fontSize: '0.8em'
   }
 });

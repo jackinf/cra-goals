@@ -13,13 +13,14 @@ import {addGoal} from "./Goal.api";
 import goalCommonStyles from "./Goal.common-styles";
 import ArrowBack from "../../node_modules/@material-ui/icons/ArrowBack";
 import {DatePicker} from "material-ui-pickers";
+import Label from "@material-ui/core/StepLabel";
 
 const styles = theme => ({ ...goalCommonStyles(theme) });
 
 function GoalNew(props) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [due, setDue] = useState('');
+  const [due, setDue] = useState(null);
   const [motivation, setMotivation] = useState('');
 
   const {classes} = props;
@@ -53,8 +54,8 @@ function GoalNew(props) {
                    onChange={e => setDescription(e.target.value)}/>
           </FormControl>
           <FormControl margin="normal" required fullWidth>
-            <InputLabel htmlFor="due">Due</InputLabel>
-            <DatePicker value={due} onChange={date => setDue(date)} />
+            <Label className={classes.dateLabel}>Due *</Label>
+            <DatePicker value={due} onChange={setDue} format="DD.MM.YYYY" />
           </FormControl>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="motivation">Motivation</InputLabel>
