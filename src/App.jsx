@@ -6,7 +6,7 @@ import './App.css';
 import GoalList from "./goals/GoalList.component";
 import GoalNew from "./goals/Goal.new.component";
 import GoalEdit from "./goals/Goal.edit.component";
-import Goal from "./goals/Goal.component";
+import GoalView from "./goals/Goal.view.component";
 import Login from "./auth/Login.component";
 
 class App extends Component {
@@ -18,7 +18,7 @@ class App extends Component {
             <Route path="/" exact component={Login} />
             <Route path="/goals/new" exact component={GoalNew} />
             <Route path="/goals/:id/edit" exact component={GoalEdit} />
-            <Route path="/goals/:id" exact component={Goal} />
+            <Route path="/goals/:id" exact component={GoalView} />
             <Route path="/goals/" component={GoalList} />
           </Switch>
         </Router>

@@ -12,8 +12,10 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import {withRouter} from 'react-router-dom';
 import {updateGoal, getGoal} from "./Goal.api";
 import ArrowBack from "../../node_modules/@material-ui/icons/ArrowBack";
+import Visibility from "../../node_modules/@material-ui/icons/Visibility";
 import goalCommonStyles from "./Goal.common-styles";
 import { DatePicker } from 'material-ui-pickers';
+import Fab from '@material-ui/core/Fab';
 
 const styles = theme => ({
   ...goalCommonStyles(theme)
@@ -42,9 +44,14 @@ function GoalEdit(props) {
 
   return (
     <div>
-      <Button className={classes.backButton} variant="fab" color="primary" onClick={() => props.history.push(`/goals`)}>
-        <ArrowBack className={classes.icon} />
-      </Button>
+      <div className={classes.centralizer}>
+        <Fab className={classes.backButton} color="primary" onClick={() => props.history.push(`/goals`)}>
+          <ArrowBack className={classes.icon} />
+        </Fab>
+        <Fab className={classes.backButton} color="primary" onClick={() => props.history.push(`/goals/${props.match.params.id}`)}>
+          <Visibility className={classes.icon} />
+        </Fab>
+      </div>
       <Paper className={classes.paper}>
         <Avatar className={classes.avatar}>
           <EditIcon/>

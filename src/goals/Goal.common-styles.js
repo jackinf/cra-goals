@@ -11,7 +11,10 @@ export default theme => ({
     },
   },
   paper: {
-    marginTop: theme.spacing.unit,
+    margin: `${theme.spacing.unit}px auto`,
+    [theme.breakpoints.up('md')]: {
+      width: '500px'
+    },
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -33,5 +36,11 @@ export default theme => ({
   },
   dateLabel: {
     fontSize: '0.8em'
+  },
+  centralizer: {
+    [theme.breakpoints.up('md')]: {
+      margin: `${theme.spacing.unit}px auto`,
+      width: '500px'
+    }
   }
 });

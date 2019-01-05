@@ -17,30 +17,34 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import Button from '@material-ui/core/Button';
+import Fab from '@material-ui/core/Fab';
 import {getGoals, deleteGoal} from './Goal.api';
 
 const ITEM_HEIGHT = 48;
 
 const styles = theme => ({
-  root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-  },
   icon: {
     margin: theme.spacing.unit,
     fontSize: 24,
   },
   paper: {
-    marginTop: theme.spacing.unit,
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    paddingTop: theme.spacing.unit * 2
+    paddingTop: theme.spacing.unit * 2,
+    [theme.breakpoints.up('md')]: {
+      margin: `${theme.spacing.unit}px auto`,
+      width: '500px'
+    },
   },
   addButton: {
     margin: `${theme.spacing.unit * 1}px`
+  },
+  centralizer: {
+    [theme.breakpoints.up('md')]: {
+      margin: `${theme.spacing.unit}px auto`,
+      width: '500px'
+    }
   }
 });
 
@@ -64,73 +68,76 @@ const GoalList = (props) => {
 
   return (
     <div>
-      <Button className={classes.addButton} variant="fab" color="primary" onClick={addItem}>
-        <AddIcon className={classes.icon} />
-      </Button>
+      <div className={classes.centralizer}>
+        <Fab className={classes.addButton} color="primary" onClick={addItem}>
+          <AddIcon className={classes.icon} />
+        </Fab>
+      </div>
 
-      <Paper className={classes.paper}>
-        <svg>
-          <text x="0" y="110px" font-size="110px" font-weight="bold" stroke="black" stroke-width="0.5" fill="none">Goals</text>
-        </svg>
-        <Table className={classes.table}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Title</TableCell>
-              <TableCell align="right">Due</TableCell>
-              <TableCell align="right" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {paginatedList &&
-            paginatedList.items &&
-            paginatedList.items.map(row => {
-              const open = Boolean(actionMenuEl);
+      <Paper className={`${classes.paper} ${classes.centralizer}`}>
+          <svg>
+            <text x="0" y="110px" fontSize="110px" fontWeight="bold" stroke="black" strokeWidth="0.5" fill="none">Goals</text>
+          </svg>
+          <Table className={classes.table}>
+            <TableHead>
+              <TableRow>
+                <TableCell>Title</TableCell>
+                <TableCell align="right">Due</TableCell>
+                <TableCell align="right" />
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {paginatedList &&
+              paginatedList.items &&
+              paginatedList.items.map(row => {
+                const open = Boolean(actionMenuEl);
 
-              return (
-                <TableRow key={row.id}>
-                  <TableCell component="th" scope="row">
-                    {row.title}
-                  </TableCell>
-                  <TableCell align="right">{moment(row.due).format("MMM Do YY")}</TableCell>
-                  <TableCell align="right">
-                    <IconButton
-                      aria-label="More"
-                      aria-owns={open ? 'long-menu' : undefined}
-                      aria-haspopup="true"
-                      onClick={handleOpenMenu}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                      anchorEl={actionMenuEl}
-                      open={open}
-                      onClose={handleCloseMenu}
-                      PaperProps={{
-                        style: {
-                          maxHeight: ITEM_HEIGHT * 4.5,
-                          width: 200,
-                        },
-                      }}
-                    >
-                      <MenuItem onClick={() => viewItem(row.id)}>
-                        <ViewIcon className={classes.icon} />
-                        View
-                      </MenuItem>
-                      <MenuItem onClick={() => editItem(row.id)}>
-                        <EditIcon className={classes.icon} />
-                        Edit
-                      </MenuItem>
-                      <MenuItem onClick={() => deleteItem(row.id)}>
-                        <DeleteIcon className={classes.icon} />
-                        Delete
-                      </MenuItem>
-                    </Menu>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                return (
+                  <TableRow key={row.id}>
+                    <TableCell component="th" scope="row">
+                      {row.title}
+                    </TableCell>
+                    <TableCell align="right">{row.due && moment(row.due).format("DD.MM.YYYY")}</TableCell>
+                    <TableCell align="right">
+                      <IconButton
+                        aria-label="More"
+                        aria-owns={open ? 'long-menu' : undefined}
+                        aria-haspopup="true"
+                        onClick={handleOpenMenu}
+                      >
+                        <MoreVertIcon />
+                      </IconButton>
+                      <Menu
+                        anchorEl={actionMenuEl}
+                        open={open}
+                        onClose={handleCloseMenu}
+                        PaperProps={{
+                          style: {
+                            maxHeight: ITEM_HEIGHT * 4.5,
+                            width: 200,
+                          },
+                        }}
+                      >
+                        <MenuItem onClick={() => viewItem(row.id)}>
+                          <ViewIcon className={classes.icon} />
+                          View
+                        </MenuItem>
+                        <MenuItem onClick={() => editItem(row.id)}>
+                          <EditIcon className={classes.icon} />
+                          Edit
+                        </MenuItem>
+                        <MenuItem onClick={() => deleteItem(row.id)}>
+                          <DeleteIcon className={classes.icon} />
+                          Delete
+                        </MenuItem>
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+
       </Paper>
     </div>
   )
