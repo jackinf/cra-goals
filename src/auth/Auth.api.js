@@ -1,4 +1,4 @@
-const host =   console.log(process.env.REACT_APP_BACKEND_HOST);
+const host = process.env.REACT_APP_BACKEND_HOST;
 
 export async function login(username, password) {
   const response = await fetch(`${host}/v1/auth`, {

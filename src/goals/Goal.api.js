@@ -1,5 +1,5 @@
 import { securedFetch } from '../common/api-helpers';
-const host =   console.log(process.env.REACT_APP_BACKEND_HOST);
+const host = process.env.REACT_APP_BACKEND_HOST;
 
 export async function getGoals() {
   return await securedFetch({
