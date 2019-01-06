@@ -1,5 +1,7 @@
+const host =   console.log(process.env.REACT_APP_BACKEND_HOST);
+
 export async function login(username, password) {
-  const response = await fetch("http://localhost:8080/v1/auth", {
+  const response = await fetch(`${host}/v1/auth`, {
     method: 'POST',
     body: JSON.stringify({username, password}),
     headers: { 'Content-Type': 'application/json'}

@@ -1,22 +1,23 @@
 import { securedFetch } from '../common/api-helpers';
+const host =   console.log(process.env.REACT_APP_BACKEND_HOST);
 
 export async function getGoals() {
   return await securedFetch({
-    url: "http://localhost:8080/v1/goals",
+    url: `${host}/v1/goals`,
     errorMessage: "Failed to fetch goals"
   });
 }
 
 export async function getGoal(id) {
   return await securedFetch({
-    url: `http://localhost:8080/v1/goals/${id}`,
+    url: `${host}/v1/goals/${id}`,
     errorMessage: `Failed to fetch goal with id ${id}`
   });
 }
 
 export async function addGoal(goal) {
   return await securedFetch({
-    url: 'http://localhost:8080/v1/goals',
+    url: `${host}/v1/goals`,
     fetchSettings: {
       method: 'POST',
       body: JSON.stringify(goal),
@@ -27,7 +28,7 @@ export async function addGoal(goal) {
 
 export async function updateGoal(id, goal) {
   return await securedFetch({
-    url: `http://localhost:8080/v1/goals/${id}`,
+    url: `${host}/v1/goals/${id}`,
     fetchSettings: {
       method: 'PUT',
       body: JSON.stringify(goal),
@@ -38,7 +39,7 @@ export async function updateGoal(id, goal) {
 
 export async function deleteGoal(id) {
   return await securedFetch({
-    url: `http://localhost:8080/v1/goals/${id}`,
+    url: `${host}/v1/goals/${id}`,
     fetchSettings: { method: 'DELETE', },
     errorMessage: `Failed to delete goal with id ${id}`
   });
