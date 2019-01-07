@@ -1,4 +1,4 @@
-const host = process.env.REACT_APP_BACKEND_HOST;
+import {backendUrl as host} from "../common/Initialization.componennt";
 
 export async function login(username, password) {
   const response = await fetch(`${host}/v1/auth`, {

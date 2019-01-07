@@ -10,6 +10,7 @@ import GoalView from "./goals/Goal.view.component";
 import Login from "./auth/Login.component";
 import DefaultAppBar from './common/DefaultAppBar.component';
 import { AuthProvider, AuthConsumer } from "./auth/AuthContext";
+import Initialization from "./common/Initialization.componennt";
 
 function App() {
   const guestRoutes = (
@@ -45,4 +46,12 @@ function App() {
   );
 }
 
-export default App;
+function ConfigurationWrapper() {
+  return (
+    <Initialization>
+      <App />
+    </Initialization>
+  )
+}
+
+export default ConfigurationWrapper;
