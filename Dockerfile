@@ -6,10 +6,10 @@ ENV GOALS_BACKEND_URL=
 
 FROM mhart/alpine-node:9 AS frontend-builder
 WORKDIR /usr/src/app
-COPY ./ClientApp/package.json ./ClientApp/yarn.lock ./
-RUN yarn
+COPY ./ClientApp/package.json ./ClientApp/package-lock.json ./
+RUN npm install
 COPY ./ClientApp .
-RUN yarn build
+RUN npm run build
 
 FROM microsoft/dotnet:2.1-sdk AS backend-builder
 WORKDIR /src
