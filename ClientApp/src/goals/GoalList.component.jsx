@@ -77,7 +77,8 @@ const GoalList = (props) => {
           {paginatedList &&
           paginatedList.items &&
           paginatedList.items.map(row => {
-            const open = Boolean(actionMenuEl);
+            const menuButtonId = `menu-button-${row.id}`;
+            const open = Boolean(actionMenuEl && actionMenuEl.id === menuButtonId);
 
             return (
               <TableRow key={row.id}>
@@ -87,6 +88,7 @@ const GoalList = (props) => {
                 <TableCell align="right">{row.due && moment(row.due).format("DD.MM.YYYY")}</TableCell>
                 <TableCell align="right">
                   <IconButton
+                    id={menuButtonId}
                     aria-label="More"
                     aria-owns={open ? 'long-menu' : undefined}
                     aria-haspopup="true"
@@ -95,6 +97,7 @@ const GoalList = (props) => {
                     <MoreVertIcon/>
                   </IconButton>
                   <Menu
+                    id={menuButtonId}
                     anchorEl={actionMenuEl}
                     open={open}
                     onClose={handleCloseMenu}
