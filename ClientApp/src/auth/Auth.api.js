@@ -1,19 +1,16 @@
-import {backendUrl as host} from "../common/Initialization.componennt";
+import firebase from "firebase";
 
-export async function login(username, password) {
-  const response = await fetch(`${host}/v1/auth`, {
-    method: 'POST',
-    body: JSON.stringify({username, password}),
-    headers: { 'Content-Type': 'application/json'}
-  });
-
-  // on success: {token: "abc..."}
-  // on failure: {error_code: "UNAUTHORIZED", message: "Authentication failed.", developer_message: "Authentication failed: invalid credential"}
-  return await response.json();
+export async function loginUsingFirebase(username, password) {
+  await firebase.auth().signInWithEmailAndPassword(username, password);
+  const token = await firebase.auth().currentUser.getIdToken(true);
+  localStorage.setItem("token", token);
 }
 
-export function logout() {
-  localStorage.removeItem("token");
+export async function logoutUsingFirebase() {
+  if (firebase.auth().currentUser) {
+    await firebase.auth().signOut();
+    localStorage.removeItem("token");
+  }
 }
 
 export function isLoggedIn() {
