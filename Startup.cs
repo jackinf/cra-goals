@@ -36,7 +36,15 @@ namespace Wrapper
         {
             Config = new Config
             {
-                GoalsBackenUrl = Environment.GetEnvironmentVariable("GOALS_BACKEND_URL")
+                GoalsBackenUrl = Environment.GetEnvironmentVariable("GOALS_BACKEND_URL"),
+                Firebase = new FirebaseConfig {
+                    ApiKey = Environment.GetEnvironmentVariable("GOALS_FIREBASE_API_KEY"),
+                    AuthDomain = Environment.GetEnvironmentVariable("GOALS_FIREBASE_AUTH_DOMAIN"),
+                    DatabaseURL = Environment.GetEnvironmentVariable("GOALS_FIREBASE_DATABASE_URL"),
+                    ProjectId = Environment.GetEnvironmentVariable("GOALS_FIREBASE_PROJECT_URL"),
+                    StorageBucket = Environment.GetEnvironmentVariable("GOALS_FIREBASE_STORAGE_BUCKET"),
+                    MessagingSenderId = Environment.GetEnvironmentVariable("GOALS_FIREBASE_MESSAGING_SENDER_ID")
+                }
             };
 
             if (env.IsDevelopment())

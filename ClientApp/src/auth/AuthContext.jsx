@@ -1,40 +1,43 @@
 import React, { useState, useEffect } from "react";
-import {isLoggedIn, login, logout} from "./Auth.api";
+import {isLoggedIn, loginUsingFirebase, logoutUsingFirebase} from "./Auth.api";
 
 const { Provider, Consumer } = React.createContext();
 
 function AuthProvider(props) {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [initialized, setInitialized] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const setLoadingWrapper = () => new Promise((resolve) => {
+    setLoading(true);
+    resolve();
+  })
+    .finally(() => setLoading(false));
 
   useEffect(() => {
     setLoggedIn(isLoggedIn());
-    setInitialized(true);
+    setLoading(false);
   }, []);
 
-  const handleLogin = async (username, password) => {
-    const response = await login(username, password);
-    if (response.token) {
-      localStorage.setItem("token", response.token);
-      setLoggedIn(true);
-    } else {
-      console.error(response.error_code, response.message);
-      console.debug(response.developer_message);
-    }
-  };
+  const handleLoginUsingFirebase = async (username, password) =>
+    await setLoadingWrapper()
+      .then(async () => await loginUsingFirebase(username, password))
+      .then(() => setLoggedIn(true))
+      .catch((err) => console.error('Firebase login failed', err));
 
-  const handleLogout = () => {
-    logout();
-    setLoggedIn(false);
-  };
+  const handleLogoutUsingFirebase = async () =>
+    await setLoadingWrapper()
+      .then(async () => await logoutUsingFirebase())
+      .then(() => setLoggedIn(false))
+      .catch((err) => console.error('Firebase logout failed', err));
 
   return (
     <Provider value={{
       loggedIn,
-      login: handleLogin,
-      logout: handleLogout,
-      initialized
+      login: handleLoginUsingFirebase,
+      logout: handleLogoutUsingFirebase,
+      loading
     }}>
+      {loading && <div>Loading...</div>}
       {props.children}
     </Provider>
   )
