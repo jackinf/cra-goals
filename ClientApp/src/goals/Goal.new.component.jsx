@@ -28,7 +28,7 @@ function GoalNew(props) {
   return (
     <div>
       <div className={classes.centralizer}>
-        <Fab className={classes.backButton} color="primary" onClick={() => props.history.push(`/goals`)}>
+        <Fab className={classes.backButton} color="default" onClick={() => props.history.push(`/goals`)}>
           <ArrowBack className={classes.icon} />
         </Fab>
       </div>

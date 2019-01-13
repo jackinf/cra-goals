@@ -17,6 +17,12 @@ import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import {getGoals, deleteGoal} from './Goal.api';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
 
 const ITEM_HEIGHT = 48;
 
@@ -50,13 +56,18 @@ const GoalList = (props) => {
   const classes = props.classes;
   const [paginatedList, setPaginatedList] = useState({});
   const [actionMenuEl, setActionMenuEl] = useState(null);
+  const [deletePendingItemId, setDeletePendingItemId] = useState(-1);
   useEffect(async () => setPaginatedList(await getGoals()), []);
 
   const viewItem = (id) => props.history.push(`/goals/${id}`);
   const editItem = (id) => props.history.push(`/goals/${id}/edit`);
-  const deleteItem = async (id) => {
-    // TODO: add dialog
+  const startDelete = (id) => {
     handleCloseMenu();
+    setDeletePendingItemId(id);
+  };
+  const confirmDelete = async () => {
+    const id = deletePendingItemId;
+    setDeletePendingItemId(-1);
     await deleteGoal(id);
     setPaginatedList(await getGoals());
   };
@@ -116,7 +127,7 @@ const GoalList = (props) => {
                       <EditIcon className={classes.icon}/>
                       Edit
                     </MenuItem>
-                    <MenuItem onClick={() => deleteItem(row.id)}>
+                    <MenuItem onClick={() => startDelete(row.id)}>
                       <DeleteIcon className={classes.icon}/>
                       Delete
                     </MenuItem>
@@ -127,6 +138,28 @@ const GoalList = (props) => {
           })}
         </TableBody>
       </Table>
+
+      <Dialog
+        open={deletePendingItemId > -1}
+        onClose={() => setDeletePendingItemId(-1)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Confirm</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure that you'd liked to delete the item?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeletePendingItemId(-1)} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => confirmDelete(true)} color="primary" autoFocus>
+            Ok
+          </Button>
+        </DialogActions>
+      </Dialog>
 
     </Paper>
   )
