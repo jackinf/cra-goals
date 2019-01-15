@@ -19,7 +19,7 @@ export function isLoggedIn() {
 
 export async function googleAuthLogin() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  const result = await firebase.auth().signInWithPopup(provider);
-  const token = result.credential.accessToken;
+  await firebase.auth().signInWithPopup(provider);
+  const token = await firebase.auth().currentUser.getIdToken(true);
   localStorage.setItem("token", token);
 }
