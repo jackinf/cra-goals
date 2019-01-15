@@ -48,6 +48,9 @@ const styles = theme => ({
   submit: {
     marginTop: theme.spacing.unit * 3,
   },
+  rightIcon: {
+    marginLeft: theme.spacing.unit,
+  },
 });
 
 class SignIn extends Component {
@@ -56,7 +59,7 @@ class SignIn extends Component {
 
     return (
       <AuthConsumer>
-        {({loggedIn, login, logout}) => {
+        {({loggedIn, login, logout, loginUsingGoogleAuth}) => {
           if (loggedIn) {
             return (
               <div>
@@ -97,13 +100,24 @@ class SignIn extends Component {
                     label="Remember me"
                   />
                   <Button
-                    type="submit"
+                    type="button"
                     fullWidth
                     variant="contained"
                     color="primary"
                     className={classes.submit}
+                    onClick={async () => await login(this.state.username, this.state.password)}
                   >
                     Sign in
+                  </Button>
+                  <Button
+                    type="button"
+                    fullWidth
+                    variant="contained"
+                    color="secondary"
+                    className={classes.submit}
+                    onClick={async () => await loginUsingGoogleAuth()}
+                  >
+                    Sign in Using Google OAuth
                   </Button>
                 </form>
               </Paper>

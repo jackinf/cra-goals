@@ -16,3 +16,10 @@ export async function logoutUsingFirebase() {
 export function isLoggedIn() {
   return !!localStorage.getItem("token")
 }
+
+export async function googleAuthLogin() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  const result = await firebase.auth().signInWithPopup(provider);
+  const token = result.credential.accessToken;
+  localStorage.setItem("token", token);
+}
