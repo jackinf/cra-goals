@@ -16,6 +16,7 @@ import Visibility from "../../node_modules/@material-ui/icons/Visibility";
 import goalCommonStyles from "./Goal.common-styles";
 import { DatePicker } from 'material-ui-pickers';
 import Fab from '@material-ui/core/Fab';
+import { Notification } from "../common/common-helpers";
 
 const styles = theme => ({
   ...goalCommonStyles(theme)
@@ -62,6 +63,7 @@ function GoalEdit(props) {
         <form className={classes.form} onSubmit={async e => {
           e.preventDefault();
           await updateGoal(props.match.params.id, {title, description, due, motivation});
+          Notification.showSuccess("Successfully updated");
           props.history.push('/goals');
         }}>
           <FormControl margin="normal" required fullWidth>

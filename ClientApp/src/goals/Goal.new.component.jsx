@@ -15,6 +15,7 @@ import ArrowBack from "../../node_modules/@material-ui/icons/ArrowBack";
 import {DatePicker} from "material-ui-pickers";
 import Label from "@material-ui/core/StepLabel";
 import Fab from '@material-ui/core/Fab';
+import { Notification } from "../common/common-helpers";
 
 const styles = theme => ({ ...goalCommonStyles(theme) });
 
@@ -42,6 +43,7 @@ function GoalNew(props) {
         <form className={classes.form} onSubmit={async e => {
           e.preventDefault();
           await addGoal({title, description, due, motivation});
+          Notification.showSuccess("Successfully added");
           props.history.push('/goals');
         }}>
           <FormControl margin="normal" required fullWidth>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {isLoggedIn, loginUsingFirebase, logoutUsingFirebase, googleAuthLogin} from "./Auth.api";
+import { Notification } from "../common/common-helpers";
 
 const { Provider, Consumer } = React.createContext();
 
@@ -22,19 +23,19 @@ function AuthProvider(props) {
     await setLoadingWrapper()
       .then(async () => await loginUsingFirebase(username, password))
       .then(() => setLoggedIn(true))
-      .catch((err) => console.error('Firebase login failed', err));
+      .catch((err) => Notification.error('Login failed', err));
 
   const handleLogoutUsingFirebase = async () =>
     await setLoadingWrapper()
       .then(async () => await logoutUsingFirebase())
       .then(() => setLoggedIn(false))
-      .catch((err) => console.error('Firebase logout failed', err));
+      .catch((err) => Notification.error('Logout failed', err));
 
   const loginUsingGoogleAuth = async () =>
     await setLoadingWrapper()
       .then(async () => await googleAuthLogin())
       .then(() => setLoggedIn(true))
-      .catch((err) => console.error('Firebase login failed', err));
+      .catch((err) => Notification.error('Login failed', err));
 
   return (
     <Provider value={{

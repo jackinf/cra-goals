@@ -23,6 +23,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
+import { Notification } from "../common/common-helpers";
 
 const ITEM_HEIGHT = 48;
 
@@ -69,6 +70,7 @@ const GoalList = (props) => {
     const id = deletePendingItemId;
     setDeletePendingItemId(-1);
     await deleteGoal(id);
+    Notification.showSuccess("Successfully deleted");
     setPaginatedList(await getGoals());
   };
   const handleOpenMenu = event => setActionMenuEl(event.currentTarget);
