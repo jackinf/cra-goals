@@ -28,9 +28,10 @@ export async function securedFetch(config) {
   }
 
   try {
-    const response = await fetch(url, fetchSettingsInner);
+    const response = await fetch(url, fetchSettingsInner)
     return await response.json();
   } catch (err) {
-    console.error(errorMessage || 'Error occurred', err)
+    console.error(errorMessage || 'Error occurred', err);
+    return err;
   }
 }

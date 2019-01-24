@@ -15,15 +15,30 @@ import ArrowBack from "../../node_modules/@material-ui/icons/ArrowBack";
 import {DatePicker} from "material-ui-pickers";
 import Label from "@material-ui/core/StepLabel";
 import Fab from '@material-ui/core/Fab';
-import { Notification } from "../common/common-helpers";
+import { Notification, Validation } from "../common/common-helpers";
+import FormHelperText from '@material-ui/core/FormHelperText';
 
 const styles = theme => ({ ...goalCommonStyles(theme) });
 
+const defaultValidationDetails = {title: '', description: '', due: '', motivation: ''};
 function GoalNew(props) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [due, setDue] = useState(null);
   const [motivation, setMotivation] = useState('');
+  const [validationDetails, setValidationDetails] = useState(defaultValidationDetails);
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    setValidationDetails(defaultValidationDetails);
+    const response = await addGoal({title, description, due, motivation});
+    if (Validation.isBadResponseWithDetails(response)) {
+      setValidationDetails({ ...Validation.convertValidationDetailsFromArrayToObject(response.details) });
+    } else {
+      Notification.showSuccess("Successfully added");
+      props.history.push('/goals');
+    }
+  };
 
   const {classes} = props;
   return (
@@ -40,33 +55,28 @@ function GoalNew(props) {
         <Typography component="h1" variant="h5">
           Create a goal
         </Typography>
-        <form className={classes.form} onSubmit={async e => {
-          e.preventDefault();
-          await addGoal({title, description, due, motivation});
-          Notification.showSuccess("Successfully added");
-          props.history.push('/goals');
-        }}>
-          <FormControl margin="normal" required fullWidth>
+        <form className={classes.form} onSubmit={handleSubmit}>
+          <FormControl margin="normal" required fullWidth error={!!validationDetails["title"]}>
             <InputLabel htmlFor="title">Title</InputLabel>
-            <Input id="title" name="title" autoComplete="title" autoFocus
-                   defaultValue={title}
-                   onChange={e => setTitle(e.target.value)}/>
+            <Input id="title" name="title" autoComplete="title" autoFocus defaultValue={title} onChange={e => setTitle(e.target.value)} />
+            {!!validationDetails["title"] && <FormHelperText id="component-error-text">{validationDetails["title"]}</FormHelperText>}
           </FormControl>
-          <FormControl margin="normal" required fullWidth>
+          <FormControl margin="normal" required fullWidth error={!!validationDetails["description"]}>
             <InputLabel htmlFor="description">Description</InputLabel>
-            <Input name="description" type="description" id="description"
-                   defaultValue={description}
-                   onChange={e => setDescription(e.target.value)}/>
+            <Input name="description" type="description" id="description" defaultValue={description} onChange={e => setDescription(e.target.value)} />
+            {!!validationDetails["description"] && <FormHelperText id="component-error-text">{validationDetails["description"]}</FormHelperText>}
           </FormControl>
-          <FormControl margin="normal" required fullWidth>
+          <FormControl margin="normal" required fullWidth error={!!validationDetails["due"]}>
             <Label className={classes.dateLabel}>Due *</Label>
             <DatePicker value={due} onChange={setDue} format="DD.MM.YYYY" />
+            {!!validationDetails["due"] && <FormHelperText id="component-error-text">{validationDetails["due"]}</FormHelperText>}
           </FormControl>
-          <FormControl margin="normal" required fullWidth>
+          <FormControl margin="normal" required fullWidth error={!!validationDetails["motivation"]}>
             <InputLabel htmlFor="motivation">Motivation</InputLabel>
             <Input name="motivation" type="motivation" id="motivation"
                    defaultValue={motivation}
                    onChange={e => setMotivation(e.target.value)}/>
+            {!!validationDetails["motivation"] && <FormHelperText id="component-error-text">{validationDetails["motivation"]}</FormHelperText>}
           </FormControl>
           <Button
             type="submit"
