@@ -45,11 +45,11 @@ function GoalEdit(props) {
     e.preventDefault();
     setValidationDetails(defaultValidationDetails);
     const response = await updateGoal(props.match.params.id, {title, description, due, motivation});
-    if (Validation.isBadResponseWithDetails(response)) {
-      setValidationDetails({ ...Validation.convertValidationDetailsFromArrayToObject(response.details) });
-    } else {
+    if (Validation.isSuccessfulResponse(response)) {
       Notification.showSuccess("Successfully updated");
       props.history.push('/goals');
+    } else if (Validation.isBadResponseWithDetails(response)) {
+      setValidationDetails({...Validation.convertValidationDetailsFromArrayToObject(response.details)});
     }
   };
 

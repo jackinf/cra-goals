@@ -32,11 +32,11 @@ function GoalNew(props) {
     e.preventDefault();
     setValidationDetails(defaultValidationDetails);
     const response = await addGoal({title, description, due, motivation});
-    if (Validation.isBadResponseWithDetails(response)) {
-      setValidationDetails({ ...Validation.convertValidationDetailsFromArrayToObject(response.details) });
-    } else {
+    if (Validation.isSuccessfulResponse(response)) {
       Notification.showSuccess("Successfully added");
       props.history.push('/goals');
+    } else if (Validation.isBadResponseWithDetails(response)) {
+      setValidationDetails({ ...Validation.convertValidationDetailsFromArrayToObject(response.details) });
     }
   };
 

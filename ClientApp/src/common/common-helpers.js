@@ -19,6 +19,8 @@ export class Notification {
 }
 
 export class Validation {
+  static isSuccessfulResponse = (response) => response && response.hasOwnProperty("id");
+
   static isBadResponseWithDetails = (response) => response
     && response.hasOwnProperty("error_code")
     && response.hasOwnProperty("details")
