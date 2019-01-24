@@ -24,6 +24,8 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import { Notification } from "../common/common-helpers";
+import { observable, action, decorate } from 'mobx';
+import { observer } from 'mobx-react';
 
 const ITEM_HEIGHT = 48;
 
@@ -53,28 +55,76 @@ const styles = theme => ({
   }
 });
 
-const GoalList = (props) => {
+class GoalsListData {
+  goals = [];
+  deletePendingItemId = -1;
+  actionMenuEl = null;
+
+  async fetchGoals() {
+    this.goals = await getGoals();
+  }
+
+  startDelete(id) {
+    this.handleCloseMenu();
+    this.deletePendingItemId = id;
+  }
+
+  cancelDelete() {
+    this.deletePendingItemId = -1;
+  }
+
+  async confirmDelete() {
+    const id = this.deletePendingItemId;
+    this.deletePendingItemId = -1;
+    await deleteGoal(id);
+    Notification.showSuccess("Successfully deleted");
+    await this.fetchGoals();
+  }
+
+  handleCloseMenu = () => this.actionMenuEl = null;
+  handleOpenMenu = (target) => this.actionMenuEl = target;
+}
+
+decorate(GoalsListData, {
+  goals: [observable],
+  deletePendingItemId: [observable],
+  actionMenuEl: [observable],
+  fetchGoals: [action],
+  startDelete: [action],
+  cancelDelete: [action],
+  confirmDelete: [action],
+  handleCloseMenu: [action],
+  handleOpenMenu: [action],
+});
+
+const GoalList = observer((props) => {
+  const goalsListData = new GoalsListData();
+
   const classes = props.classes;
-  const [paginatedList, setPaginatedList] = useState({});
-  const [actionMenuEl, setActionMenuEl] = useState(null);
-  const [deletePendingItemId, setDeletePendingItemId] = useState(-1);
-  useEffect(async () => setPaginatedList(await getGoals()), []);
+  // const [paginatedList, setPaginatedList] = useState({});
+  // const [actionMenuEl, setActionMenuEl] = useState(null);
+  // const [deletePendingItemId, setDeletePendingItemId] = useState(-1);
+  // useEffect(async () => setPaginatedList(await getGoals()), []);
+  useEffect(async () => await goalsListData.fetchGoals(), []);
 
   const viewItem = (id) => props.history.push(`/goals/${id}`);
   const editItem = (id) => props.history.push(`/goals/${id}/edit`);
-  const startDelete = (id) => {
-    handleCloseMenu();
-    setDeletePendingItemId(id);
-  };
-  const confirmDelete = async () => {
-    const id = deletePendingItemId;
-    setDeletePendingItemId(-1);
-    await deleteGoal(id);
-    Notification.showSuccess("Successfully deleted");
-    setPaginatedList(await getGoals());
-  };
-  const handleOpenMenu = event => setActionMenuEl(event.currentTarget);
-  const handleCloseMenu = () => setActionMenuEl(null);
+
+  const { paginatedList, actionMenuEl, deletePendingItemId } = goalsListData.goals;
+
+  // const startDelete = (id) => {
+  //   handleCloseMenu();
+  //   setDeletePendingItemId(id);
+  // };
+  // const confirmDelete = async () => {
+  //   const id = deletePendingItemId;
+  //   setDeletePendingItemId(-1);
+  //   await deleteGoal(id);
+  //   Notification.showSuccess("Successfully deleted");
+  //   setPaginatedList(await getGoals());
+  // };
+  // const handleOpenMenu = event => setActionMenuEl(event.currentTarget);
+  // const handleCloseMenu = () => setActionMenuEl(null);
 
   return (
     <Paper className={`${classes.paper} ${classes.centralizer}`}>
@@ -105,7 +155,7 @@ const GoalList = (props) => {
                     aria-label="More"
                     aria-owns={open ? 'long-menu' : undefined}
                     aria-haspopup="true"
-                    onClick={handleOpenMenu}
+                    onClick={goalsListData.handleOpenMenu}
                   >
                     <MoreVertIcon/>
                   </IconButton>
@@ -113,7 +163,7 @@ const GoalList = (props) => {
                     id={menuButtonId}
                     anchorEl={actionMenuEl}
                     open={open}
-                    onClose={handleCloseMenu}
+                    onClose={goalsListData.handleCloseMenu}
                     PaperProps={{
                       style: {
                         maxHeight: ITEM_HEIGHT * 4.5,
@@ -129,7 +179,7 @@ const GoalList = (props) => {
                       <EditIcon className={classes.icon}/>
                       Edit
                     </MenuItem>
-                    <MenuItem onClick={() => startDelete(row.id)}>
+                    <MenuItem onClick={() => goalsListData.startDelete(row.id)}>
                       <DeleteIcon className={classes.icon}/>
                       Delete
                     </MenuItem>
@@ -143,7 +193,7 @@ const GoalList = (props) => {
 
       <Dialog
         open={deletePendingItemId > -1}
-        onClose={() => setDeletePendingItemId(-1)}
+        onClose={() => goalsListData.cancelDelete()}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -154,10 +204,10 @@ const GoalList = (props) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeletePendingItemId(-1)} color="primary">
+          <Button onClick={() => goalsListData.cancelDelete()} color="primary">
             Cancel
           </Button>
-          <Button onClick={() => confirmDelete(true)} color="primary" autoFocus>
+          <Button onClick={() => goalsListData.confirmDelete()} color="primary" autoFocus>
             Ok
           </Button>
         </DialogActions>
@@ -165,7 +215,7 @@ const GoalList = (props) => {
 
     </Paper>
   )
-};
+});
 
 GoalList.propTypes = {
   classes: PropTypes.object.isRequired,

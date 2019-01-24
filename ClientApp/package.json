@@ -8,6 +8,8 @@
     "@material-ui/icons": "^3.0.1",
     "firebase": "^5.7.2",
     "material-ui-pickers": "^2.0.5",
+    "mobx": "^5.9.0",
+    "mobx-react": "^5.4.3",
     "moment": "^2.23.0",
     "prop-types": "^15.6.2",
     "react": "16.7.0-alpha.0",
