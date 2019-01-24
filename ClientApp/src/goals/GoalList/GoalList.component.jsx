@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
@@ -16,65 +16,35 @@ import IconButton from '@material-ui/core/IconButton';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
-import {getGoals, deleteGoal} from './Goal.api';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
-import { Notification } from "../common/common-helpers";
+import goalsListData from "./GoalList.data";
+import styles from "./GoalList.styles";
 
 const ITEM_HEIGHT = 48;
 
-const styles = theme => ({
-  icon: {
-    margin: theme.spacing.unit,
-    fontSize: 24,
-  },
-  paper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    paddingTop: theme.spacing.unit * 2,
-    [theme.breakpoints.up('md')]: {
-      margin: `${theme.spacing.unit}px auto`,
-      width: '500px'
-    },
-  },
-  addButton: {
-    margin: `${theme.spacing.unit * 1}px`
-  },
-  centralizer: {
-    [theme.breakpoints.up('md')]: {
-      margin: `${theme.spacing.unit}px auto`,
-      width: '500px'
-    }
-  }
-});
-
 const GoalList = (props) => {
-  const classes = props.classes;
-  const [paginatedList, setPaginatedList] = useState({});
-  const [actionMenuEl, setActionMenuEl] = useState(null);
-  const [deletePendingItemId, setDeletePendingItemId] = useState(-1);
-  useEffect(async () => setPaginatedList(await getGoals()), []);
+  const {
+    // variables
+    paginatedList,
+    actionMenuEl,
 
-  const viewItem = (id) => props.history.push(`/goals/${id}`);
-  const editItem = (id) => props.history.push(`/goals/${id}/edit`);
-  const startDelete = (id) => {
-    handleCloseMenu();
-    setDeletePendingItemId(id);
-  };
-  const confirmDelete = async () => {
-    const id = deletePendingItemId;
-    setDeletePendingItemId(-1);
-    await deleteGoal(id);
-    Notification.showSuccess("Successfully deleted");
-    setPaginatedList(await getGoals());
-  };
-  const handleOpenMenu = event => setActionMenuEl(event.currentTarget);
-  const handleCloseMenu = () => setActionMenuEl(null);
+    // actions
+    viewItem,
+    editItem,
+    handleOpenMenu,
+    handleCloseMenu,
+    isDeletePending,
+    startDelete,
+    cancelDelete,
+    confirmDelete
+  } = new goalsListData(props);
+
+  const classes = props.classes;
 
   return (
     <Paper className={`${classes.paper} ${classes.centralizer}`}>
@@ -142,8 +112,8 @@ const GoalList = (props) => {
       </Table>
 
       <Dialog
-        open={deletePendingItemId > -1}
-        onClose={() => setDeletePendingItemId(-1)}
+        open={isDeletePending()}
+        onClose={cancelDelete}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
       >
@@ -154,12 +124,8 @@ const GoalList = (props) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setDeletePendingItemId(-1)} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={() => confirmDelete(true)} color="primary" autoFocus>
-            Ok
-          </Button>
+          <Button onClick={cancelDelete} color="primary">Cancel</Button>
+          <Button onClick={confirmDelete} color="primary" autoFocus>Ok</Button>
         </DialogActions>
       </Dialog>
 

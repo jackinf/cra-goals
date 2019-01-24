@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from 'material-ui-pickers';
 import './App.css';
-import GoalList from "./goals/GoalList.component";
+import GoalList from "./goals/GoalList";
 import GoalNew from "./goals/Goal.new.component";
 import GoalEdit from "./goals/Goal.edit.component";
 import GoalView from "./goals/Goal.view.component";
