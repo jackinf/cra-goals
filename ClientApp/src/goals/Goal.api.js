@@ -2,9 +2,9 @@ import { securedFetch } from '../common/api-helpers';
 import { backendUrl as host } from "../common/Initialization.componennt";
 import {NotificationManager} from "../common/common-helpers";
 
-export async function getGoals() {
+export async function getGoals(page, perPage) {
   return await securedFetch({
-    url: `${host}/v1/goals`,
+    url: `${host}/v1/goals?page=${page}&per_page=${perPage}`,
     onFailure: () => NotificationManager.showError("Failed to fetch goals")
   });
 }

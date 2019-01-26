@@ -42,7 +42,7 @@ async function doFetch(url, fetchSettingsInner, onFailure, attemptsLeft = MAX_RE
 
         // this is a hack because firebase can issue a token which is not valid during some initial period
         if (attemptsLeft > -1) {
-          console.info('attemptsLeft', attemptsLeft);
+          console.info(`token verification failed, attempts left: ${attemptsLeft}`);
           await sleep(1000 * (MAX_RETRIES_FOR_LOGOUT - attemptsLeft));
           return await doFetch(url, fetchSettingsInner, onFailure, attemptsLeft-1);
         }

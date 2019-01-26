@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {isLoggedIn, loginUsingFirebase, logoutUsingFirebase, googleAuthLogin} from "./Auth.api";
-import {NotificationManager, sleep} from "../common/common-helpers";
+import {NotificationManager} from "../common/common-helpers";
 
 const { Provider, Consumer } = React.createContext();
 

@@ -25,13 +25,99 @@ import Button from '@material-ui/core/Button';
 import goalsListData from "./GoalList.data";
 import styles from "./GoalList.styles";
 import {sleep} from "../../common/common-helpers";
+import TableFooter from '@material-ui/core/TableFooter';
+import TablePagination from '@material-ui/core/TablePagination';
+import FirstPageIcon from '@material-ui/icons/FirstPage';
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import LastPageIcon from '@material-ui/icons/LastPage';
+
+const actionsStyles = theme => ({
+  root: {
+    flexShrink: 0,
+    color: theme.palette.text.secondary,
+    marginLeft: theme.spacing.unit * 2.5,
+  },
+});
 
 const ITEM_HEIGHT = 48;
+
+class TablePaginationActions extends React.Component {
+  handleFirstPageButtonClick = event => {
+    this.props.onChangePage(event, 0);
+  };
+
+  handleBackButtonClick = event => {
+    this.props.onChangePage(event, this.props.page - 1);
+  };
+
+  handleNextButtonClick = event => {
+    this.props.onChangePage(event, this.props.page + 1);
+  };
+
+  handleLastPageButtonClick = event => {
+    this.props.onChangePage(
+      event,
+      Math.max(0, Math.ceil(this.props.count / this.props.rowsPerPage) - 1),
+    );
+  };
+
+  render() {
+    const { classes, count, page, rowsPerPage, theme } = this.props;
+
+    return (
+      <div className={classes.root}>
+        <IconButton
+          onClick={this.handleFirstPageButtonClick}
+          disabled={page === 0}
+          aria-label="First Page"
+        >
+          {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+        </IconButton>
+        <IconButton
+          onClick={this.handleBackButtonClick}
+          disabled={page === 0}
+          aria-label="Previous Page"
+        >
+          {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+        </IconButton>
+        <IconButton
+          onClick={this.handleNextButtonClick}
+          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+          aria-label="Next Page"
+        >
+          {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+        </IconButton>
+        <IconButton
+          onClick={this.handleLastPageButtonClick}
+          disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+          aria-label="Last Page"
+        >
+          {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+        </IconButton>
+      </div>
+    );
+  }
+}
+
+TablePaginationActions.propTypes = {
+  classes: PropTypes.object.isRequired,
+  count: PropTypes.number.isRequired,
+  onChangePage: PropTypes.func.isRequired,
+  page: PropTypes.number.isRequired,
+  rowsPerPage: PropTypes.number.isRequired,
+  theme: PropTypes.object.isRequired,
+};
+
+const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: true })(
+  TablePaginationActions,
+);
+
 
 const GoalList = (props) => {
   const {
     // variables
-    paginatedList,
+    paginatedList, // {page: 1, per_page: 5, page_count: 2, total_count: 9, items: Array(5)}
     actionMenuEl,
 
     // actions
@@ -59,59 +145,76 @@ const GoalList = (props) => {
             <TableCell align="right"/>
           </TableRow>
         </TableHead>
-        <TableBody>
-          {paginatedList &&
-          paginatedList.items &&
-          paginatedList.items.map(row => {
-            const menuButtonId = `menu-button-${row.id}`;
-            const open = Boolean(actionMenuEl && actionMenuEl.id === menuButtonId);
+        {paginatedList && paginatedList.items &&
+          <>
+            <TableBody>
+              {paginatedList.items.map(row => {
+                const menuButtonId = `menu-button-${row.id}`;
+                const open = Boolean(actionMenuEl && actionMenuEl.id === menuButtonId);
 
-            return (
-              <TableRow key={row.id}>
-                <TableCell component="th" scope="row">
-                  {row.title}
-                </TableCell>
-                <TableCell align="right">{row.due && moment(row.due).format("DD.MM.YYYY")}</TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    id={menuButtonId}
-                    aria-label="More"
-                    aria-owns={open ? 'long-menu' : undefined}
-                    aria-haspopup="true"
-                    onClick={handleOpenMenu}
-                  >
-                    <MoreVertIcon/>
-                  </IconButton>
-                  <Menu
-                    id={menuButtonId}
-                    anchorEl={actionMenuEl}
-                    open={open}
-                    onClose={handleCloseMenu}
-                    PaperProps={{
-                      style: {
-                        maxHeight: ITEM_HEIGHT * 4.5,
-                        width: 200,
-                      },
-                    }}
-                  >
-                    <MenuItem onClick={() => viewItem(row.id)}>
-                      <ViewIcon className={classes.icon}/>
-                      View
-                    </MenuItem>
-                    <MenuItem onClick={() => editItem(row.id)}>
-                      <EditIcon className={classes.icon}/>
-                      Edit
-                    </MenuItem>
-                    <MenuItem onClick={() => startDelete(row.id)}>
-                      <DeleteIcon className={classes.icon}/>
-                      Delete
-                    </MenuItem>
-                  </Menu>
-                </TableCell>
+                return (
+                  <TableRow key={row.id}>
+                    <TableCell component="th" scope="row">
+                      {row.title}
+                    </TableCell>
+                    <TableCell align="right">{row.due && moment(row.due).format("DD.MM.YYYY")}</TableCell>
+                    <TableCell align="right">
+                      <IconButton
+                        id={menuButtonId}
+                        aria-label="More"
+                        aria-owns={open ? 'long-menu' : undefined}
+                        aria-haspopup="true"
+                        onClick={handleOpenMenu}
+                      >
+                        <MoreVertIcon/>
+                      </IconButton>
+                      <Menu
+                        id={menuButtonId}
+                        anchorEl={actionMenuEl}
+                        open={open}
+                        onClose={handleCloseMenu}
+                        PaperProps={{
+                          style: {
+                            maxHeight: ITEM_HEIGHT * 4.5,
+                            width: 200,
+                          },
+                        }}
+                      >
+                        <MenuItem onClick={() => viewItem(row.id)}>
+                          <ViewIcon className={classes.icon}/>
+                          View
+                        </MenuItem>
+                        <MenuItem onClick={() => editItem(row.id)}>
+                          <EditIcon className={classes.icon}/>
+                          Edit
+                        </MenuItem>
+                        <MenuItem onClick={() => startDelete(row.id)}>
+                          <DeleteIcon className={classes.icon}/>
+                          Delete
+                        </MenuItem>
+                      </Menu>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]}
+                  colSpan={3}
+                  count={paginatedList.total_count}
+                  rowsPerPage={paginatedList.per_page}
+                  page={paginatedList.page-1}
+                  SelectProps={{native: true}}
+                  onChangePage={(event, page) => fetchGoals(page + 1, paginatedList.per_page)}
+                  onChangeRowsPerPage={(event) => fetchGoals(paginatedList.page, parseInt(event.target.value))}
+                  ActionsComponent={TablePaginationActionsWrapped}
+                />
               </TableRow>
-            );
-          })}
-        </TableBody>
+            </TableFooter>
+          </>
+        }
       </Table>
 
       <Dialog
