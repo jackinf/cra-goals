@@ -1,4 +1,6 @@
 import {getToken, logoutUsingFirebase} from "../auth/Auth.api";
+import {sleep} from "./common-helpers";
+const MAX_RETRIES_FOR_LOGOUT = 3;
 
 function TokenException(message) {
   this.message = message;
@@ -29,19 +31,28 @@ export async function securedFetch(config) {
     fetchSettingsInner.headers['Content-Type'] = 'application/json'
   }
 
-  return await fetch(url, fetchSettingsInner)
-    .then(response => getJsonOrFail(response, onFailure));
+  return await doFetch(url, fetchSettingsInner, onFailure, MAX_RETRIES_FOR_LOGOUT);
 }
 
-async function getJsonOrFail(resp, onFailure) {
+async function doFetch(url, fetchSettingsInner, onFailure, attemptsLeft = MAX_RETRIES_FOR_LOGOUT) {
+  const resp = await fetch(url, fetchSettingsInner);
   if (resp && resp.ok === false) {
     switch (resp.status) {
-      // case 401:
-      //   await logoutUsingFirebase();
-      //   window.location.reload(true);
-      //   break;
+      case 401:
+
+        // this is a hack because firebase can issue a token which is not valid during some initial period
+        if (attemptsLeft > -1) {
+          console.info('attemptsLeft', attemptsLeft);
+          await sleep(1000 * (MAX_RETRIES_FOR_LOGOUT - attemptsLeft));
+          return await doFetch(url, fetchSettingsInner, onFailure, attemptsLeft-1);
+        }
+
+        await logoutUsingFirebase();
+        window.location.reload(true);
+        break;
       default:
         typeof onFailure === "function" && onFailure(resp.status);
+        return null;
     }
   } else {
     return resp.json();

@@ -23,8 +23,8 @@ function AuthProvider(props) {
     await setLoadingWrapper()
       .then(async () => await loginUsingFirebase(username, password))
       // this is a hack because firebase can issue a token which is not valid during some initial period
-      .then(async () => await sleep(500).then(() => window.location.reload(true)))
-      // .then(() => setLoggedIn(true))
+      // .then(async () => await sleep(500).then(() => window.location.reload(true)))
+      .then(() => setLoggedIn(true))
       .catch((err) => NotificationManager.showError('Login failed', err));
 
   const handleLogoutUsingFirebase = async () =>
