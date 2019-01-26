@@ -15,7 +15,7 @@ import ArrowBack from "../../node_modules/@material-ui/icons/ArrowBack";
 import {DatePicker} from "material-ui-pickers";
 import Label from "@material-ui/core/StepLabel";
 import Fab from '@material-ui/core/Fab';
-import { Notification, Validation } from "../common/common-helpers";
+import { NotificationManager, ValidationManager } from "../common/common-helpers";
 import FormHelperText from '@material-ui/core/FormHelperText';
 
 const styles = theme => ({ ...goalCommonStyles(theme) });
@@ -32,11 +32,12 @@ function GoalNew(props) {
     e.preventDefault();
     setValidationDetails(defaultValidationDetails);
     const response = await addGoal({title, description, due, motivation});
-    if (Validation.isSuccessfulResponse(response)) {
-      Notification.showSuccess("Successfully added");
+    if (ValidationManager.isSuccessfulResponse(response)) {
+      NotificationManager.showSuccess("Successfully added");
+      NotificationManager.pushNotification("Successfully updated");
       props.history.push('/goals');
-    } else if (Validation.isBadResponseWithDetails(response)) {
-      setValidationDetails({ ...Validation.convertValidationDetailsFromArrayToObject(response.details) });
+    } else if (ValidationManager.isBadResponseWithDetails(response)) {
+      setValidationDetails({ ...ValidationManager.convertValidationDetailsFromArrayToObject(response.details) });
     }
   };
 

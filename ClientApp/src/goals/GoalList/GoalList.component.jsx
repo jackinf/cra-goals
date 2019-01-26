@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import moment from 'moment';
@@ -24,6 +24,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import goalsListData from "./GoalList.data";
 import styles from "./GoalList.styles";
+import {sleep} from "../../common/common-helpers";
 
 const ITEM_HEIGHT = 48;
 
@@ -34,6 +35,7 @@ const GoalList = (props) => {
     actionMenuEl,
 
     // actions
+    fetchGoals,
     viewItem,
     editItem,
     handleOpenMenu,
@@ -43,6 +45,7 @@ const GoalList = (props) => {
     cancelDelete,
     confirmDelete
   } = new goalsListData(props);
+  useEffect(async () => await sleep(500).then(() => fetchGoals()), []);
 
   const classes = props.classes;
 

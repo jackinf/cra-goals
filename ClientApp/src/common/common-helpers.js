@@ -9,16 +9,25 @@ const defaultOptions = {
   draggable: true
 };
 
-export class Notification {
-  static showSuccess = function (message, options) {
+export class NotificationManager {
+  static showSuccess = function(message, options) {
     toast.success(message, {...defaultOptions, ...options});
   };
-  static error = function (message, options) {
+  static showError = function(message, options) {
     toast.error(message, {...defaultOptions, ...options});
   };
+
+  static requestPermissions = () => Notification && Notification.requestPermission();
+
+  static pushNotification = function(message) {
+    if (Notification && Notification.permission === 'granted') {
+      const notification = new Notification(message);
+      setTimeout(notification.close.bind(notification), 4000);
+    }
+  }
 }
 
-export class Validation {
+export class ValidationManager {
   static isSuccessfulResponse = (response) => response && response.hasOwnProperty("id");
 
   static isBadResponseWithDetails = (response) => response
@@ -32,3 +41,5 @@ export class Validation {
       return acc;
     }, {});
 }
+
+export const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));

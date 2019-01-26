@@ -1,6 +1,6 @@
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import {deleteGoal, getGoals} from "../Goal.api";
-import {Notification} from "../../common/common-helpers";
+import {NotificationManager} from "../../common/common-helpers";
 
 export default function GoalsListData(props) {
   const [paginatedList, setPaginatedList] = useState({});
@@ -24,12 +24,10 @@ export default function GoalsListData(props) {
     const id = deletePendingItemId;
     setDeletePendingItemId(-1);
     await deleteGoal(id);
-    Notification.showSuccess("Successfully deleted");
+    NotificationManager.showSuccess("Successfully deleted");
     await this.fetchGoals();
   };
 
   this.viewItem = (id) => props.history.push(`/goals/${id}`);
   this.editItem = (id) => props.history.push(`/goals/${id}/edit`);
-
-  useEffect(async () => await this.fetchGoals(), []);
 }

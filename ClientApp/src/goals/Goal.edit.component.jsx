@@ -16,7 +16,7 @@ import Visibility from "../../node_modules/@material-ui/icons/Visibility";
 import goalCommonStyles from "./Goal.common-styles";
 import { DatePicker } from 'material-ui-pickers';
 import Fab from '@material-ui/core/Fab';
-import {Notification, Validation} from "../common/common-helpers";
+import {NotificationManager, ValidationManager} from "../common/common-helpers";
 import FormHelperText from "./Goal.new.component";
 
 const styles = theme => ({
@@ -45,11 +45,12 @@ function GoalEdit(props) {
     e.preventDefault();
     setValidationDetails(defaultValidationDetails);
     const response = await updateGoal(props.match.params.id, {title, description, due, motivation});
-    if (Validation.isSuccessfulResponse(response)) {
-      Notification.showSuccess("Successfully updated");
+    if (ValidationManager.isSuccessfulResponse(response)) {
+      NotificationManager.showSuccess("Successfully updated");
+      NotificationManager.pushNotification("Successfully updated");
       props.history.push('/goals');
-    } else if (Validation.isBadResponseWithDetails(response)) {
-      setValidationDetails({...Validation.convertValidationDetailsFromArrayToObject(response.details)});
+    } else if (ValidationManager.isBadResponseWithDetails(response)) {
+      setValidationDetails({...ValidationManager.convertValidationDetailsFromArrayToObject(response.details)});
     }
   };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {isLoggedIn, loginUsingFirebase, logoutUsingFirebase, googleAuthLogin} from "./Auth.api";
-import { Notification } from "../common/common-helpers";
+import {NotificationManager, sleep} from "../common/common-helpers";
 
 const { Provider, Consumer } = React.createContext();
 
@@ -14,28 +14,30 @@ function AuthProvider(props) {
   })
     .finally(() => setLoading(false));
 
-  useEffect(() => {
-    setLoggedIn(isLoggedIn());
+  useEffect(async () => {
+    setLoggedIn(await isLoggedIn());
     setLoading(false);
   }, []);
 
   const handleLoginUsingFirebase = async (username, password) =>
     await setLoadingWrapper()
       .then(async () => await loginUsingFirebase(username, password))
-      .then(() => setLoggedIn(true))
-      .catch((err) => Notification.error('Login failed', err));
+      // this is a hack because firebase can issue a token which is not valid during some initial period
+      .then(async () => await sleep(500).then(() => window.location.reload(true)))
+      // .then(() => setLoggedIn(true))
+      .catch((err) => NotificationManager.showError('Login failed', err));
 
   const handleLogoutUsingFirebase = async () =>
     await setLoadingWrapper()
       .then(async () => await logoutUsingFirebase())
       .then(() => setLoggedIn(false))
-      .catch((err) => Notification.error('Logout failed', err));
+      .catch((err) => NotificationManager.showError('Logout failed', err));
 
   const loginUsingGoogleAuth = async () =>
     await setLoadingWrapper()
       .then(async () => await googleAuthLogin())
       .then(() => setLoggedIn(true))
-      .catch((err) => Notification.error('Login failed', err));
+      .catch((err) => NotificationManager.showError('Login failed', err));
 
   return (
     <Provider value={{

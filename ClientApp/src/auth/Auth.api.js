@@ -13,8 +13,12 @@ export async function logoutUsingFirebase() {
   }
 }
 
-export function isLoggedIn() {
+export async function isLoggedIn() {
   return !!localStorage.getItem("token")
+}
+
+export async function getToken() {
+  return localStorage.getItem("token")
 }
 
 export async function googleAuthLogin() {
