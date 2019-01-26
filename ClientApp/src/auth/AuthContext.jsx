@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from "react";
 import {isLoggedIn, loginUsingFirebase, logoutUsingFirebase, googleAuthLogin} from "./Auth.api";
 import {NotificationManager} from "../common/common-helpers";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const { Provider, Consumer } = React.createContext();
 
 function AuthProvider(props) {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [initializing, setInitializing] = useState(true);
   const [loading, setLoading] = useState(true);
-
   const setLoadingWrapper = () => new Promise((resolve) => {
     setLoading(true);
     resolve();
@@ -17,6 +18,7 @@ function AuthProvider(props) {
   useEffect(async () => {
     setLoggedIn(await isLoggedIn());
     setLoading(false);
+    setInitializing(false);
   }, []);
 
   const handleLoginUsingFirebase = async (username, password) =>
@@ -47,8 +49,8 @@ function AuthProvider(props) {
       loginUsingGoogleAuth,
       loading
     }}>
-      {loading && <div>Loading...</div>}
-      {props.children}
+      {loading && <LinearProgress style={{width: '100%'}} />}
+      {!initializing && props.children}
     </Provider>
   )
 }

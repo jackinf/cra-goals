@@ -1,4 +1,5 @@
-import firebase from "firebase";
+import firebase from "firebase/app";
+import 'firebase/auth';
 import {sleep} from "../common/common-helpers";
 import jwtDecode from 'jwt-decode';
 import moment from "moment";
@@ -14,7 +15,7 @@ export async function logoutUsingFirebase() {
 }
 
 export async function isLoggedIn() {
-  return await !!getCurrentFirebaseUserWithRetries(3, () => 500);
+  return !!(await getCurrentFirebaseUserWithRetries(3, () => 500));
 }
 
 export async function getToken() {
@@ -23,6 +24,9 @@ export async function getToken() {
     return undefined;
   }
   let token = await currentUser.getIdToken();
+  if (!token) {
+    return undefined;
+  }
   token = refreshIfNeeded(token);
   return token;
 }

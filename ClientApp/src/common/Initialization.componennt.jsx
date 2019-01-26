@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import firebase from "firebase";
+import firebase from "firebase/app";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 export let backendUrl;
 
@@ -30,7 +31,7 @@ function Initialization(props) {
   }, []);
 
   return loading
-    ? <div>Loading...</div>
+    ? <LinearProgress style={{width: '100%'}} />
     : props.children
 }
 

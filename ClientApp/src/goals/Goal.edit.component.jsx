@@ -18,6 +18,7 @@ import { DatePicker } from 'material-ui-pickers';
 import Fab from '@material-ui/core/Fab';
 import {NotificationManager, ValidationManager} from "../common/common-helpers";
 import FormHelperText from "./Goal.new.component";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const styles = theme => ({
   ...goalCommonStyles(theme)
@@ -25,7 +26,8 @@ const styles = theme => ({
 
 const defaultValidationDetails = {title: '', description: '', due: '', motivation: ''};
 function GoalEdit(props) {
-  const [loading, setLoading] = useState(true);
+  const [initializing, setInitializing] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [due, setDue] = useState('');
@@ -38,29 +40,37 @@ function GoalEdit(props) {
     setDescription(goal.description);
     setDue(goal.due);
     setMotivation(goal.motivation);
-    setLoading(false);
+    setInitializing(false);
   }, []);
 
   const handleSubmit = async e => {
     e.preventDefault();
-    setValidationDetails(defaultValidationDetails);
-    const response = await updateGoal(props.match.params.id, {title, description, due, motivation});
-    if (ValidationManager.isSuccessfulResponse(response)) {
-      NotificationManager.showSuccess("Successfully updated");
-      NotificationManager.pushNotification("Successfully updated");
-      props.history.push('/goals');
-    } else if (ValidationManager.isBadResponseWithDetails(response)) {
-      setValidationDetails({...ValidationManager.convertValidationDetailsFromArrayToObject(response.details)});
+    let onFinally = () => {};
+    try {
+      setLoading(true);
+      setValidationDetails(defaultValidationDetails);
+      const response = await updateGoal(props.match.params.id, {title, description, due, motivation});
+      if (ValidationManager.isSuccessfulResponse(response)) {
+        NotificationManager.showSuccess("Successfully updated");
+        NotificationManager.pushNotification("Successfully updated");
+        onFinally = () => props.history.push('/goals');
+      } else if (ValidationManager.isBadResponseWithDetails(response)) {
+        setValidationDetails({...ValidationManager.convertValidationDetailsFromArrayToObject(response.details)});
+      }
+    } finally {
+      setLoading(false);
+      onFinally();
     }
   };
 
   const {classes} = props;
 
-  if (loading)
-    return <div>Loading...</div>;
+  if (initializing)
+    return <LinearProgress className={classes.loader} />;
 
   return (
     <div>
+      {loading && <LinearProgress className={classes.loader} />}
       <div className={classes.centralizer}>
         <Fab className={classes.backButton} color="default" onClick={() => props.history.push(`/goals`)}>
           <ArrowBack className={classes.icon} />
@@ -103,6 +113,7 @@ function GoalEdit(props) {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={loading}
           >
             Update goal
           </Button>

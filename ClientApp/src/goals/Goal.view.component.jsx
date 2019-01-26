@@ -17,6 +17,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const styles = theme => ({
   ...goalCommonStyles(theme),
@@ -52,11 +53,11 @@ function Goal(props) {
     setGoal({...goal});
     setLoading(false);
   }, []);
+  const classes = props.classes;
 
   if (loading)
-    return <div>Loading...</div>;
+    return <LinearProgress className={classes.loader} />;
 
-  const classes = props.classes;
   const {title, description, due, motivation} = goal;
   const confirmDelete = async () => {
     await deleteGoal(deletePendingItemId);

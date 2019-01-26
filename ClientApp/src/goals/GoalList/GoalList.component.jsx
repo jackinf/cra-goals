@@ -31,12 +31,13 @@ import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const actionsStyles = theme => ({
   root: {
     flexShrink: 0,
     color: theme.palette.text.secondary,
-    marginLeft: theme.spacing.unit * 2.5,
+    marginLeft: theme.spacing.unit * 1,
   },
 });
 
@@ -117,8 +118,9 @@ const TablePaginationActionsWrapped = withStyles(actionsStyles, { withTheme: tru
 const GoalList = (props) => {
   const {
     // variables
-    paginatedList, // {page: 1, per_page: 5, page_count: 2, total_count: 9, items: Array(5)}
+    paginatedList,
     actionMenuEl,
+    loading,
 
     // actions
     fetchGoals,
@@ -137,6 +139,7 @@ const GoalList = (props) => {
 
   return (
     <Paper className={`${classes.paper} ${classes.centralizer}`}>
+      {loading && <LinearProgress className={classes.loader} />}
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
@@ -201,7 +204,7 @@ const GoalList = (props) => {
             <TableFooter>
               <TableRow>
                 <TablePagination
-                  rowsPerPageOptions={[5, 10, 25]}
+                  rowsPerPageOptions={[5, 10, 25, 100]}
                   colSpan={3}
                   count={paginatedList.total_count}
                   rowsPerPage={paginatedList.per_page}

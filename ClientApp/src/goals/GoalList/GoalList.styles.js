@@ -21,5 +21,8 @@ export default theme => ({
       margin: `${theme.spacing.unit}px auto`,
       width: '500px'
     }
+  },
+  loader: {
+    width: '100%'
   }
 });

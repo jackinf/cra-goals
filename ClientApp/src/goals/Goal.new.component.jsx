@@ -17,11 +17,13 @@ import Label from "@material-ui/core/StepLabel";
 import Fab from '@material-ui/core/Fab';
 import { NotificationManager, ValidationManager } from "../common/common-helpers";
 import FormHelperText from '@material-ui/core/FormHelperText';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const styles = theme => ({ ...goalCommonStyles(theme) });
 
 const defaultValidationDetails = {title: '', description: '', due: '', motivation: ''};
 function GoalNew(props) {
+  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [due, setDue] = useState(null);
@@ -30,20 +32,28 @@ function GoalNew(props) {
 
   const handleSubmit = async e => {
     e.preventDefault();
-    setValidationDetails(defaultValidationDetails);
-    const response = await addGoal({title, description, due, motivation});
-    if (ValidationManager.isSuccessfulResponse(response)) {
-      NotificationManager.showSuccess("Successfully added");
-      NotificationManager.pushNotification("Successfully updated");
-      props.history.push('/goals');
-    } else if (ValidationManager.isBadResponseWithDetails(response)) {
-      setValidationDetails({ ...ValidationManager.convertValidationDetailsFromArrayToObject(response.details) });
+    let onFinally = () => {};
+    try {
+      setLoading(true);
+      setValidationDetails(defaultValidationDetails);
+      const response = await addGoal({title, description, due, motivation});
+      if (ValidationManager.isSuccessfulResponse(response)) {
+        NotificationManager.showSuccess("Successfully added");
+        NotificationManager.pushNotification("Successfully updated");
+        onFinally = () => props.history.push('/goals');
+      } else if (ValidationManager.isBadResponseWithDetails(response)) {
+        setValidationDetails({...ValidationManager.convertValidationDetailsFromArrayToObject(response.details)});
+      }
+    } finally {
+      setLoading(false);
+      onFinally();
     }
   };
 
   const {classes} = props;
   return (
     <div>
+      {loading && <LinearProgress className={classes.loader} />}
       <div className={classes.centralizer}>
         <Fab className={classes.backButton} color="default" onClick={() => props.history.push(`/goals`)}>
           <ArrowBack className={classes.icon} />
@@ -85,6 +95,7 @@ function GoalNew(props) {
             variant="contained"
             color="primary"
             className={classes.submit}
+            disabled={loading}
           >
             Add goal
           </Button>

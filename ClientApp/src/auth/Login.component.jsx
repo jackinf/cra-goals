@@ -59,7 +59,7 @@ class SignIn extends Component {
 
     return (
       <AuthConsumer>
-        {({loggedIn, login, logout, loginUsingGoogleAuth}) => {
+        {({loggedIn, login, logout, loginUsingGoogleAuth, loading}) => {
           if (loggedIn) {
             return (
               <div>
@@ -106,6 +106,7 @@ class SignIn extends Component {
                     color="primary"
                     className={classes.submit}
                     onClick={async () => await login(this.state.username, this.state.password)}
+                    disabled={loading}
                   >
                     Sign in
                   </Button>
@@ -116,6 +117,7 @@ class SignIn extends Component {
                     color="secondary"
                     className={classes.submit}
                     onClick={async () => await loginUsingGoogleAuth()}
+                    disabled={loading}
                   >
                     Sign in Using Google OAuth
                   </Button>
