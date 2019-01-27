@@ -1,4 +1,4 @@
-import {getToken, logoutUsingFirebase} from "../auth/Auth.api";
+import {getToken, logout} from "../auth/Auth.api";
 import {sleep} from "./commonHelpers";
 import {TokenException, UrlException} from "./exceptions";
 
@@ -41,7 +41,7 @@ async function doFetch(url, fetchSettingsInner, onFailure, attemptsLeft = MAX_RE
           return await doFetch(url, fetchSettingsInner, onFailure, attemptsLeft-1);
         }
 
-        await logoutUsingFirebase();
+        await logout();
         window.location.reload(true);
         break;
       default:

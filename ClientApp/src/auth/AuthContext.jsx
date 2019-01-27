@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {isLoggedIn, loginUsingFirebase, logoutUsingFirebase, googleAuthLogin} from "./Auth.api";
+import {isLoggedIn, login, logout, googleAuthLogin} from "./Auth.api";
 import NotificationManager from "../utils/notificationManager";
 import LinearProgress from '@material-ui/core/LinearProgress';
 
@@ -23,7 +23,7 @@ function AuthProvider(props) {
 
   const handleLoginUsingFirebase = async (username, password) =>
     await setLoadingWrapper()
-      .then(async () => await loginUsingFirebase(username, password))
+      .then(async () => await login(username, password))
       // this is a hack because firebase can issue a token which is not valid during some initial period
       // .then(async () => await sleep(500).then(() => window.location.reload(true)))
       .then(() => setLoggedIn(true))
@@ -31,7 +31,7 @@ function AuthProvider(props) {
 
   const handleLogoutUsingFirebase = async () =>
     await setLoadingWrapper()
-      .then(async () => await logoutUsingFirebase())
+      .then(async () => await logout())
       .then(() => setLoggedIn(false))
       .catch((err) => NotificationManager.showError('Logout failed', err));
 
