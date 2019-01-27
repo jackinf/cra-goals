@@ -1,23 +1,23 @@
-import { securedFetch } from '../common/api-helpers';
 import { backendUrl as host } from "../common/Initialization.component";
-import {NotificationManager} from "../common/common-helpers";
+import NotificationManager from "../utils/notificationManager";
+import ApiManager from "../utils/apiManager";
 
 export async function getGoals(page, perPage) {
-  return await securedFetch({
+  return await ApiManager.securedFetch({
     url: `${host}/v1/goals?page=${page}&per_page=${perPage}`,
     onFailure: () => NotificationManager.showError("Failed to fetch goals")
   });
 }
 
 export async function getGoal(id) {
-  return await securedFetch({
+  return await ApiManager.securedFetch({
     url: `${host}/v1/goals/${id}`,
     onFailure: () => NotificationManager.showError(`Failed to fetch goal with id ${id}`)
   });
 }
 
 export async function addGoal(goal) {
-  return await securedFetch({
+  return await ApiManager.securedFetch({
     url: `${host}/v1/goals`,
     fetchSettings: {
       method: 'POST',
@@ -28,7 +28,7 @@ export async function addGoal(goal) {
 }
 
 export async function updateGoal(id, goal) {
-  return await securedFetch({
+  return await ApiManager.securedFetch({
     url: `${host}/v1/goals/${id}`,
     fetchSettings: {
       method: 'PUT',
@@ -39,7 +39,7 @@ export async function updateGoal(id, goal) {
 }
 
 export async function deleteGoal(id) {
-  return await securedFetch({
+  return await ApiManager.securedFetch({
     url: `${host}/v1/goals/${id}`,
     fetchSettings: { method: 'DELETE', },
     onFailure: () => NotificationManager.showError(`Failed to delete goal with id ${id}`)

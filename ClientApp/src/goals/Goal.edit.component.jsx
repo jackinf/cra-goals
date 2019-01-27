@@ -16,7 +16,7 @@ import Visibility from "../../node_modules/@material-ui/icons/Visibility";
 import goalCommonStyles from "./Goal.common-styles";
 import { DatePicker } from 'material-ui-pickers';
 import Fab from '@material-ui/core/Fab';
-import {NotificationManager, ValidationManager} from "../common/common-helpers";
+import {NotificationManager, ValidationManager} from "../helpers/common-helpers";
 import FormHelperText from "./Goal.new.component";
 import LinearProgress from '@material-ui/core/LinearProgress';
 

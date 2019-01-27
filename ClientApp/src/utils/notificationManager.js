@@ -1,4 +1,4 @@
-import { toast } from 'react-toastify';
+import {toast} from "react-toastify";
 
 const defaultOptions = {
   position: "top-right",
@@ -9,7 +9,7 @@ const defaultOptions = {
   draggable: true
 };
 
-export class NotificationManager {
+export default class NotificationManager {
   static showSuccess = function(message, options) {
     toast.success(message, {...defaultOptions, ...options});
   };
@@ -26,20 +26,3 @@ export class NotificationManager {
     }
   }
 }
-
-export class ValidationManager {
-  static isSuccessfulResponse = (response) => response && response.hasOwnProperty("id");
-
-  static isBadResponseWithDetails = (response) => response
-    && response.hasOwnProperty("error_code")
-    && response.hasOwnProperty("details")
-    && Array.isArray(response.details);
-
-  static convertValidationDetailsFromArrayToObject = (details) =>
-    details.reduce((acc, cur) => {
-      acc[cur.field] = cur.error;
-      return acc;
-    }, {});
-}
-
-export const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));

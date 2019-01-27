@@ -24,7 +24,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import goalsListData from "./GoalList.data";
 import styles from "./GoalList.styles";
-import {sleep} from "../../common/common-helpers";
+import {sleep} from "../../helpers/common-helpers";
 import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import FirstPageIcon from '@material-ui/icons/FirstPage';

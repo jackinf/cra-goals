@@ -1,6 +1,6 @@
 import {useState} from "react";
 import {deleteGoal, getGoals} from "../Goal.api";
-import {NotificationManager} from "../../common/common-helpers";
+import NotificationManager from "../../utils/notificationManager";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_PER_PAGE = 25;

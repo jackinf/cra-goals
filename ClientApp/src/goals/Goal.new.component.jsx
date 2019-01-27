@@ -15,7 +15,7 @@ import ArrowBack from "../../node_modules/@material-ui/icons/ArrowBack";
 import {DatePicker} from "material-ui-pickers";
 import Label from "@material-ui/core/StepLabel";
 import Fab from '@material-ui/core/Fab';
-import { NotificationManager, ValidationManager } from "../common/common-helpers";
+import { NotificationManager, ValidationManager } from "../helpers/common-helpers";
 import FormHelperText from '@material-ui/core/FormHelperText';
 import LinearProgress from '@material-ui/core/LinearProgress';
 

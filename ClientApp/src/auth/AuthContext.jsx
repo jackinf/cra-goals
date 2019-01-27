@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {isLoggedIn, loginUsingFirebase, logoutUsingFirebase, googleAuthLogin} from "./Auth.api";
-import {NotificationManager} from "../common/common-helpers";
+import NotificationManager from "../utils/notificationManager";
 import LinearProgress from '@material-ui/core/LinearProgress';
 
 const { Provider, Consumer } = React.createContext();
