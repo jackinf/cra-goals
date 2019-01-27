@@ -15,9 +15,10 @@ import ArrowBack from "../../node_modules/@material-ui/icons/ArrowBack";
 import {DatePicker} from "material-ui-pickers";
 import Label from "@material-ui/core/StepLabel";
 import Fab from '@material-ui/core/Fab';
-import { NotificationManager, ValidationManager } from "../helpers/common-helpers";
 import FormHelperText from '@material-ui/core/FormHelperText';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import ValidationManager from "../utils/validationManager";
+import NotificationManager from "../utils/notificationManager";
 
 const styles = theme => ({ ...goalCommonStyles(theme) });
 

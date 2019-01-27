@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { NotificationManager } from './helpers/common-helpers';
+import NotificationManager from "./utils/notificationManager";
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

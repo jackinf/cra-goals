@@ -24,7 +24,6 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import goalsListData from "./GoalList.data";
 import styles from "./GoalList.styles";
-import {sleep} from "../../helpers/common-helpers";
 import TableFooter from '@material-ui/core/TableFooter';
 import TablePagination from '@material-ui/core/TablePagination';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
@@ -133,7 +132,7 @@ const GoalList = (props) => {
     cancelDelete,
     confirmDelete
   } = new goalsListData(props);
-  useEffect(async () => await sleep(500).then(() => fetchGoals()), []);
+  useEffect(async () => await fetchGoals(), []);
 
   const classes = props.classes;
 
