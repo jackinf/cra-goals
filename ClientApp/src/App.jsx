@@ -10,7 +10,7 @@ import GoalView from "./goals/Goal.view.component";
 import Login from "./auth/Login.component";
 import DefaultAppBar from './common/DefaultAppBar.component';
 import { AuthProvider, AuthConsumer } from "./auth/AuthContext";
-import Initialization from "./common/Initialization.componennt";
+import Initialization from "./common/Initialization.component";
 import { ToastContainer } from 'react-toastify';
 
 function App() {

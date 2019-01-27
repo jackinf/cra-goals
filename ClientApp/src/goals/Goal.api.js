@@ -1,5 +1,5 @@
 import { securedFetch } from '../common/api-helpers';
-import { backendUrl as host } from "../common/Initialization.componennt";
+import { backendUrl as host } from "../common/Initialization.component";
 import {NotificationManager} from "../common/common-helpers";
 
 export async function getGoals(page, perPage) {

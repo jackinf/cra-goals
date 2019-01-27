@@ -1,51 +1,38 @@
 import firebase from "firebase/app";
 import 'firebase/auth';
-import {sleep} from "../common/common-helpers";
 import jwtDecode from 'jwt-decode';
 import moment from "moment";
 
+const TOKEN_KEY = "token";
+
 export async function loginUsingFirebase(username, password) {
   await firebase.auth().signInWithEmailAndPassword(username, password);
+  const token = await firebase.auth().currentUser.getIdToken(true);
+  localStorage.setItem(TOKEN_KEY, token);
 }
 
 export async function logoutUsingFirebase() {
   if (firebase.auth().currentUser) {
     await firebase.auth().signOut();
   }
+  localStorage.removeItem(TOKEN_KEY);
 }
 
 export async function isLoggedIn() {
-  return !!(await getCurrentFirebaseUserWithRetries(3, () => 500));
+  return !!localStorage.getItem(TOKEN_KEY);
 }
 
 export async function getToken() {
-  const currentUser = await getCurrentFirebaseUserWithRetries();
-  if (!currentUser) {
-    return undefined;
-  }
-  let token = await currentUser.getIdToken();
-  if (!token) {
-    return undefined;
-  }
-  token = refreshIfNeeded(token);
+  let token = localStorage.getItem(TOKEN_KEY);
+  token = await refreshIfNeeded(token);
   return token;
 }
 
 export async function googleAuthLogin() {
   const provider = new firebase.auth.GoogleAuthProvider();
-  await firebase.auth().signInWithRedirect(provider);
-}
-
-async function getCurrentFirebaseUserWithRetries(tries = 5, timeout = i => i * 500) {
-  for (let i = 1; i <= tries; i++) {
-    const currentUser = firebase.auth().currentUser;
-    if (!currentUser) {
-      console.info(`trying to get currentUser, attempts left ${tries-i}`);
-      await sleep(timeout(i));
-    } else {
-      return currentUser;
-    }
-  }
+  await firebase.auth().signInWithPopup(provider);
+  const token = await firebase.auth().currentUser.getIdToken(true);
+  localStorage.setItem(TOKEN_KEY, token);
 }
 
 async function refreshIfNeeded(token) {
@@ -57,6 +44,8 @@ async function refreshIfNeeded(token) {
 
   if (expirationDate < now) { // expired
     console.info('token expired');
+    await logoutUsingFirebase();
+    window.location.reload(true);
   } else if (expirationDate > now && expirationDate < now2) {
     console.info('token will soon expire. Refreshing');
     await firebase.auth().currentUser.getIdToken(true);
